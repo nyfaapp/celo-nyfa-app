@@ -2,15 +2,6 @@
 
 import { Box, Flex, Link } from "@chakra-ui/react";
 import { HeaderLogo } from "./svg-icons/logos/header-logo";
-import { TopLeftIcon } from "./svg-icons/logos/top-left-icon";
-import { Avatar, Name } from "@coinbase/onchainkit/identity";
-
-import {
-  ConnectWallet,
-  Wallet,
-  WalletDropdown,
-  WalletDropdownDisconnect,
-} from "@coinbase/onchainkit/wallet";
 import OnchainKitWallet from "./onchainkit-wallet";
 
 const Header = () => {
