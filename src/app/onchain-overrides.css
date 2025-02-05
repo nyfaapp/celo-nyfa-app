@@ -1,0 +1,10 @@
+.custom-dark {
+    --ock-font-family: 'parkinsans';
+    --ock-border-radius: 15px;
+    --ock-text-primary: #FFFFFF;
+    --ock-text-foreground: #FFFFFF;
+    --ock-text-inverse: #FFFFFF;
+    --ock-bg-primary: #EA5D5D;
+    --ock-bg-primary-hover: #EA5D5D;
+    --ock-bg-primary-active: #EA5D5D;
+ }
