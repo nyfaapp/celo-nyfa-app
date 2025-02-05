@@ -1,6 +1,6 @@
 "use client";
 
-import { BodyLogoNotConnected } from "@/components/ui/svg-icons/logos/body-logo-not-connected";
+import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
 import { Button, Text, Flex, Box, HStack, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 
@@ -16,27 +16,21 @@ export default function AllNoFAs() {
         position="relative" // Add this to establish positioning context
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
-          <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"} >
+          <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
             All NoFAs*, Minted by Creators
           </Text>
 
-          <Button
-            bgColor={"#FDBB23"}
-            borderRadius={15}
-            mt={4}
-            w={"3/6"}
-          >
-            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"} >
+          <Button bgColor={"#FDBB23"} borderRadius={15} mt={4} w={"3/6"}>
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
               Create yours
             </Text>
           </Button>
 
           <Divider
             className="my-4 px-8"
-            style={{ backgroundColor: "#0F1C33"}}
+            style={{ backgroundColor: "#0F1C33" }}
           />
         </Box>
-
 
         <Box
           flex={1} // This will make it take remaining space
@@ -48,13 +42,12 @@ export default function AllNoFAs() {
             {Array.from({ length: 15 }).map((_, index) => (
               <Box
                 key={index}
-                bg="gray.100"
-                height="200px"
-                borderRadius="md"
+                bg={gridColors[index]}
+                height={"150px"}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                border={"15px"}
+                borderRadius={"15px"}
               >
                 <Text color="#0F1C33">NoFA #{index + 1}</Text>
               </Box>
@@ -85,3 +78,8 @@ export default function AllNoFAs() {
     </>
   );
 }
+
+const gridColors = Array.from({ length: 15 }).map((_, index) => {
+  const colors = ["#FDBB23", "#EA5D5D", "#A9CEEB"];
+  return colors[index % colors.length];
+});
