@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Flex, Link } from "@chakra-ui/react";
-import { HeaderLogo } from "./svg-icons/logos/header-logo";
+import { HeaderLogo } from "../svg-icons/logos/header-logo";
 import OnchainKitWallet from "./onchainkit-wallet";
 
 const Header = () => {

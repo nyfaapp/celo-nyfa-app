@@ -1,6 +1,6 @@
 "use client";
 
-import { BodyLogoNotConnected } from "@/components/ui/svg-icons/logos/body-logo-not-connected";
+import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";

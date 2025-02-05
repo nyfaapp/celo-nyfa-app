@@ -1,7 +1,7 @@
 "use client";
 
-import { BodyLogoCreateYourNoFA } from "@/components/ui/svg-icons/logos/body-logo-create-your-nofa";
-import { BodyLogoNotConnected } from "@/components/ui/svg-icons/logos/body-logo-not-connected";
+import { BodyLogoCreateYourNoFA } from "@/components/svg-icons/logos/body-logo-create-your-nofa";
+import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
 import {
   Button,
   Text,
