@@ -1,7 +1,7 @@
 import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const BodyLogoWhite: React.FC<IconSvgProps> = ({}) => {
+export const BodyLogoFirstPage: React.FC<IconSvgProps> = ({}) => {
   return (
     <svg
       width="108"
