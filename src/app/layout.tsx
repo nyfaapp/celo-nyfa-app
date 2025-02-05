@@ -8,6 +8,7 @@ import { Web3Provider } from "@/providers/web3-provider";
 import "@coinbase/onchainkit/styles.css";
 import "./onchain-overrides.css";
 import { ColorModeProvider } from "@/components/ui/color-mode";
+import SupabaseProvider from "@/providers/supabase-provider";
 
 const parkinsans = Parkinsans({
   subsets: ["latin"],
@@ -29,7 +30,9 @@ export default function RootLayout({
         <Provider>
           <Web3Provider>
             <Header />
-            <ColorModeProvider forcedTheme="dark">{children}</ColorModeProvider>
+            <ColorModeProvider forcedTheme="dark">
+              <SupabaseProvider>{children}</SupabaseProvider>
+            </ColorModeProvider>
           </Web3Provider>
         </Provider>
       </body>
