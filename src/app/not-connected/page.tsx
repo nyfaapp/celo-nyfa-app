@@ -2,10 +2,23 @@
 
 import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useAccount } from "wagmi";
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
 
 export default function NotConnected() {
+  const { isConnected, isDisconnected } = useAccount();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isConnected) {
+      router.replace("/all-nofas");
+    } else if (isDisconnected) {
+      router.replace("/not-connected");
+    }
+  }, [isConnected, isDisconnected, router]);
   //   const flexRef = useRef(null);
 
   //   const downloadAsPNG = async () => {
@@ -62,14 +75,22 @@ export default function NotConnected() {
       >
         <BodyLogoNotConnected />
         <Text color={"#0F1C33"} fontSize={"40px"} fontWeight={"bold"} mt={8}>
-          not connected*
+          {isConnected ? "connected" : "not connected*"}
         </Text>
 
-        <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
-          <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-            Connect
-          </Text>
-        </Button>
+        {isDisconnected && (
+          <Button
+            bgColor={"#FDBB23"}
+            borderRadius={15}
+            mt={12}
+            px={16}
+            w={"3/6"}
+          >
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+              Connect
+            </Text>
+          </Button>
+        )}
 
         {/* <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
           <Spinner size="sm" color="default" />
@@ -77,7 +98,13 @@ export default function NotConnected() {
       </Flex>
 
       <Box bg="#0F1C33" position="absolute" bottom="0" right="0" py={4}>
-        <Text color={"white"} fontSize={"14px"} fontWeight={"normal"} mx={16} textAlign={"center"}>
+        <Text
+          color={"white"}
+          fontSize={"14px"}
+          fontWeight={"normal"}
+          mx={16}
+          textAlign={"center"}
+        >
           If you are *connected, you will be able to create a NoFA
         </Text>
       </Box>
