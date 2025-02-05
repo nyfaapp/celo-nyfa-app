@@ -3,6 +3,8 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Avatar, Name } from "@coinbase/onchainkit/identity";
 
+import { Toaster, toaster } from "@/components/ui/toaster";
+
 import {
   ConnectWallet,
   Wallet,
@@ -12,17 +14,30 @@ import {
 
 const OnchainKitWallet = () => {
   return (
-    <Box>
-      <Wallet>
-        <ConnectWallet text="Connect">
-          <Avatar className="h-6 w-6" />
-          {/* <Name /> */}
-        </ConnectWallet>
-        <WalletDropdown>
-          <WalletDropdownDisconnect />
-        </WalletDropdown>
-      </Wallet>
-    </Box>
+    <>
+      <Toaster />
+
+      <Box>
+        <Wallet>
+          <ConnectWallet
+            text="Connect"
+            onConnect={() => {
+              toaster.create({
+                description: "Connected",
+                duration: 3000,
+                type: "success",
+              });
+            }}
+          >
+            <Avatar className="h-6 w-6" />
+            <Name />
+          </ConnectWallet>
+          <WalletDropdown>
+            <WalletDropdownDisconnect />
+          </WalletDropdown>
+        </Wallet>
+      </Box>
+    </>
   );
 };
 
