@@ -1,0 +1,30 @@
+"use client";
+
+import { Box, Flex, Link } from "@chakra-ui/react";
+import { HeaderLogo } from "./svg-icons/logos/header-logo";
+import { TopLeftIcon } from "./svg-icons/logos/top-left-icon";
+import { Avatar, Name } from "@coinbase/onchainkit/identity";
+
+import {
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownDisconnect,
+} from "@coinbase/onchainkit/wallet";
+import OnchainKitWallet from "./onchainkit-wallet";
+
+const Header = () => {
+  return (
+    <Box bg="#0F1C33" px={4} position="sticky" top="0" left="0" zIndex="1000">
+      <Flex h={16} alignItems="center" justifyContent="space-between" w="full">
+        <Link style={{ marginRight: "auto" }}>
+          <HeaderLogo />
+        </Link>
+
+        <OnchainKitWallet />
+      </Flex>
+    </Box>
+  );
+};
+
+export default Header;
