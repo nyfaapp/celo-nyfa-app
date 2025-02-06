@@ -19,13 +19,6 @@ interface NewsResponse {
   total_pages: number;
 }
 
-interface Headline {
-  title: string | null;
-  imageURL: string | null;
-  link: string | null;
-  sentiment: "Positive" | "Negative" | "Neutral" | null;
-}
-
 export async function GET(
   request: NextRequest,
   props: { params: Promise<{ coinTicker: string }> }
