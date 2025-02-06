@@ -21,7 +21,13 @@ export default function FirstPage() {
 
   const router = useRouter();
 
-  const handleAnonymousSignIn = async () => {
+  useEffect(() => {
+    if (user) {
+      router.push("/all-nofas");
+    }
+  }, [user, router]);
+
+  async function handleAnonymousSignIn() {
     setIsCreatingAnonUser(true);
     try {
       const {
@@ -47,7 +53,7 @@ export default function FirstPage() {
           type: "info",
         });
         setIsCreatingAnonUser(false);
-
+        router.push("/all-nofas");
         return;
       } else {
         const { data, error } = await supabase.auth.signInAnonymously();
@@ -115,7 +121,6 @@ export default function FirstPage() {
         return;
       }
     } catch (error) {
-
       toaster.create({
         description:
           error instanceof Error ? error.message : "Authentication failed",
@@ -128,7 +133,7 @@ export default function FirstPage() {
     } finally {
       setIsCreatingAnonUser(false);
     }
-  };
+  }
 
   return (
     <>
