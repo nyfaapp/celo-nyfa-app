@@ -206,7 +206,7 @@ export default function CreateYourNoFA() {
             <Spinner size="sm" color="default" />
           ) : (
             <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-              Get started
+              Create
             </Text>
           )}
         </Button>
