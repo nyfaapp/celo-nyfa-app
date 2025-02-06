@@ -14,22 +14,24 @@ export default function Home() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const user = (await supabase.auth.getUser()).data;
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (isDisconnected) {
         router.replace("/not-connected");
+        return;
       }
 
-      if (isConnected && !user) {
-        router.replace("/first-page");
-      }
-
-      if (isConnected && user) {
-        router.replace("/all-nofas");
+      if (isConnected) {
+        if (!user) {
+          router.replace("/first-page");
+        } else {
+          router.replace("/all-nofas");
+        }
       }
     };
+
     checkUser();
-  }, [isConnected, isDisconnected, router]);
+  }, [isConnected, isDisconnected, router, supabase]);
 
   // Display a loading state while redirecting
   return (
