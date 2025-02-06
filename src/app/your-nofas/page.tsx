@@ -5,6 +5,7 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { Button, Text, Flex, Box, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -91,17 +92,18 @@ export default function YourNoFas() {
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
               {userNofas.map((nofa, index) => (
-                <Box
-                  key={index}
-                  bg={getColorForNoFA(nofa.headlines)}
-                  height={"150px"}
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderRadius={"15px"}
-                >
-                  <Text color="#0F1C33">NoFA #{index + 1}</Text>
-                </Box>
+                <Link href={`/nofa/${nofa.id}`} key={index}>
+                  <Box
+                    bg={getColorForNoFA(nofa.headlines)}
+                    height={"150px"}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius={"15px"}
+                  >
+                    <Text color="#0F1C33">NoFA #{index + 1}</Text>
+                  </Box>
+                </Link>
               ))}
             </SimpleGrid>
           )}
