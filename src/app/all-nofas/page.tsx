@@ -18,7 +18,7 @@ import { useEffect } from "react";
 
 export default function AllNoFAs() {
   const router = useRouter();
-  const { allNofas, isLoadingAll, fetchAllNoFAs } = useNoFAStore();
+  const { allNofas, isLoadingAll, fetchAllNoFAs,setNoFAFromData } = useNoFAStore();
 
   useEffect(() => {
     fetchAllNoFAs();
@@ -78,6 +78,7 @@ export default function AllNoFAs() {
                     justifyContent="center"
                     borderRadius={"15px"}
                     w={"full"}
+                    onClick={()=>setNoFAFromData(nofa)}
                   >
                     <Text color="#0F1C33" m={4} textAlign={"center"}>{nofa.id}</Text>
                   </Box>
