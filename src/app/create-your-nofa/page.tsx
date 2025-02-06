@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useSupabase } from "@/providers/supabase-provider";
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import { Spinner } from "@heroui/spinner";
+import { CreateNoFAProps, Headline, NoFA } from "@/types/nofa";
 
 export default function CreateYourNoFA() {
   const [coinId, setCoinId] = useState<string>("ethereum");
