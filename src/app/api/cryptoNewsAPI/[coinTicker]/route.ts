@@ -26,7 +26,10 @@ interface Headline {
   sentiment: "Positive" | "Negative" | "Neutral" | null;
 }
 
-export async function GET(request: NextRequest, props: { params: Promise<{ coinTicker: string }> }) {
+export async function GET(
+  request: NextRequest,
+  props: { params: Promise<{ coinTicker: string }> }
+) {
   const params = await props.params;
   const { coinTicker } = params;
 
@@ -45,20 +48,16 @@ export async function GET(request: NextRequest, props: { params: Promise<{ coinT
       return NextResponse.json([]);
     }
 
-    // Create a new array manually
     const headlines = [];
-    
+
     for (const item of data.data) {
       headlines.push({
         title: item.title,
         imageURL: item.image_url,
         link: item.news_url,
-        sentiment: item.sentiment
+        sentiment: item.sentiment,
       });
     }
-
-    // Log the headlines before sending
-    console.log('Headlines to be sent:', headlines);
 
     return NextResponse.json(headlines);
   } catch (error) {
