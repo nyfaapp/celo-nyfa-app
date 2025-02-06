@@ -155,12 +155,14 @@ export default function FirstPage() {
           px={16}
           w={"3/6"}
           onClick={handleAnonymousSignIn}
-          loading={isCreatingAnonUser}
-          loadingText={<Spinner size="sm" color="default" />}
         >
-          <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-            Get started
-          </Text>
+          {isCreatingAnonUser ? (
+            <Spinner size="sm" color="default" />
+          ) : (
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+              Get started
+            </Text>
+          )}
         </Button>
 
         {/* <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
