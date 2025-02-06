@@ -59,7 +59,7 @@ export default function FirstPage() {
 
         if (updateError) throw updateError;
 
-        const response = await fetch("/api/wallet", {
+        const response = await fetch("/api/createCreator", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
