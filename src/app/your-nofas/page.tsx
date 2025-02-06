@@ -92,7 +92,7 @@ export default function YourNoFas() {
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
               {userNofas.map((nofa, index) => (
-                <Link href={`/nofa/${nofa.id}`} key={index}>
+                <Link href={`/your-nofas/${nofa.id}`} key={index}>
                   <Box
                     bg={getColorForNoFA(nofa.headlines)}
                     height={"150px"}
