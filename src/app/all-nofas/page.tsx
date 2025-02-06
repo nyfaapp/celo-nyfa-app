@@ -1,12 +1,28 @@
 "use client";
 
-import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
-import { Button, Text, Flex, Box, HStack, SimpleGrid } from "@chakra-ui/react";
+import { useNoFAStore } from "@/stores/nofa";
+import { getColorForNoFA } from "@/utils/colorForNoFa";
+import {
+  Button,
+  Text,
+  Flex,
+  Box,
+  HStack,
+  SimpleGrid,
+  Link,
+} from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
+import { Spinner } from "@heroui/spinner";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function AllNoFAs() {
   const router = useRouter();
+  const { allNofas, isLoadingAll, fetchAllNoFAs } = useNoFAStore();
+
+  useEffect(() => {
+    fetchAllNoFAs();
+  }, []);
 
   return (
     <>
@@ -14,9 +30,9 @@ export default function AllNoFAs() {
         justifyContent={"start"}
         alignItems={"center"}
         flexDirection={"column"}
-        h={"100vh"} // Change to full viewport height
-        pb="60px" // Add padding bottom to account for absolute box
-        position="relative" // Add this to establish positioning context
+        h={"100vh"}
+        pb="60px"
+        position="relative"
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
           <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
@@ -41,38 +57,45 @@ export default function AllNoFAs() {
           />
         </Box>
 
-        <Box
-          flex={1} // This will make it take remaining space
-          overflowY="auto"
-          w="full"
-          mb={4} // Add margin bottom for spacing
-        >
-          <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
-            {Array.from({ length: 15 }).map((_, index) => (
-              <Box
-                key={index}
-                bg={gridColors[index]}
-                height={"150px"}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                borderRadius={"15px"}
-              >
-                <Text color="#0F1C33">NoFA #{index + 1}</Text>
-              </Box>
-            ))}
-          </SimpleGrid>
+        <Box flex={1} overflowY="auto" w="full" mb={4}>
+          {isLoadingAll ? (
+            <Flex justifyContent="center" alignItems="center" h="full">
+              <Spinner size="sm" />
+            </Flex>
+          ) : allNofas.length === 0 ? (
+            <Text color="#0F1C33" fontSize="18px" textAlign="center" mt={8}>
+              No NoFAs have been created yet
+            </Text>
+          ) : (
+            <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
+              {allNofas.map((nofa, index) => (
+                <Link href={`/your-nofas/${nofa.id}`} key={index}>
+                  <Box
+                    bg={getColorForNoFA(nofa.headlines)}
+                    height={"150px"}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius={"15px"}
+                    w={"full"}
+                  >
+                    <Text color="#0F1C33" m={4} textAlign={"center"}>{nofa.id}</Text>
+                  </Box>
+                </Link>
+              ))}
+            </SimpleGrid>
+          )}
         </Box>
       </Flex>
 
       <Box
         bg="#0F1C33"
-        position="fixed" // Change to fixed
+        position="fixed"
         bottom="0"
-        left="0" // Add this
+        left="0"
         right="0"
         py={4}
-        zIndex={2} // Ensure it stays on top
+        zIndex={2}
       >
         <Text
           color={"white"}
@@ -87,8 +110,3 @@ export default function AllNoFAs() {
     </>
   );
 }
-
-const gridColors = Array.from({ length: 15 }).map((_, index) => {
-  const colors = ["#FDBB23", "#EA5D5D", "#A9CEEB"];
-  return colors[index % colors.length];
-});
