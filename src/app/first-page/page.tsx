@@ -8,6 +8,7 @@ import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
 import { useRouter } from "next/navigation";
+import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
 
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
@@ -15,8 +16,8 @@ import { useRouter } from "next/navigation";
 export default function FirstPage() {
   const [isCreatingAnonUser, setIsCreatingAnonUser] = useState(false);
 
-  const { supabase } = useSupabase();
-  const { address} = useAccount();
+  const { user, supabase } = useSupabase();
+  const { address } = useAccount();
 
   const router = useRouter();
 
@@ -109,14 +110,11 @@ export default function FirstPage() {
           type: "success",
         });
 
-        setIsCreatingAnonUser(false);
-
         router.push("/all-nofas");
 
         return;
       }
     } catch (error) {
-      setIsCreatingAnonUser(false);
 
       toaster.create({
         description:
@@ -127,6 +125,8 @@ export default function FirstPage() {
       console.error("Error:", error);
 
       return;
+    } finally {
+      setIsCreatingAnonUser(false);
     }
   };
 
@@ -139,7 +139,7 @@ export default function FirstPage() {
         flexDirection={"column"}
         h={"75vh"}
       >
-        <BodyLogoFirstPage />
+        {user ? <BodyLogoFirstPage /> : <BodyLogoNotConnected />}
         <Text color={"#0F1C33"} fontSize={"40px"} fontWeight={"bold"} mt={8}>
           nyfa*
         </Text>
@@ -154,6 +154,7 @@ export default function FirstPage() {
           mt={12}
           px={16}
           w={"3/6"}
+          disabled={isCreatingAnonUser}
           onClick={handleAnonymousSignIn}
         >
           {isCreatingAnonUser ? (
