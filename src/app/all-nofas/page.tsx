@@ -1,6 +1,6 @@
 "use client";
 
-import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
+import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
 import { Button, Text, Flex, Box, HStack, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { useRouter } from "next/navigation";

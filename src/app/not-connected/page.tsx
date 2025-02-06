@@ -1,6 +1,6 @@
 "use client";
 
-import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
+import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
 import { useSupabase } from "@/providers/supabase-provider";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";

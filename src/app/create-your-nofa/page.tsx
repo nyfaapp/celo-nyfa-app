@@ -1,7 +1,7 @@
 "use client";
 
-import { BodyLogoCreateYourNoFA } from "@/components/svg-icons/logos/body-logo-create-your-nofa";
-import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
+import { BodyLogoCreateYourNoFA } from "@/components/nyfa/svg-icons/logos/body-logo-create-your-nofa";
+import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
 import { Text, Flex, Box, Button } from "@chakra-ui/react";
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
@@ -13,7 +13,7 @@ import {
 } from "@heroui/autocomplete";
 import { coins } from "../../../data/coins";
 import { useState } from "react";
-import PriceWithChart from "@/components/coin-perspective/price-with-chart";
+import PriceWithChart from "@/components/nyfa/coin-perspective/price-with-chart";
 
 export default function CreateYourNoFA() {
   const [coin, setCoin] = useState<string>("ethereum");

@@ -1,10 +1,10 @@
 "use client";
 
-import { BodyLogoFirstPage } from "@/components/svg-icons/logos/body-logo-first-page";
+import { BodyLogoFirstPage } from "@/components/nyfa/svg-icons/logos/body-logo-first-page";
 import { useSupabase } from "@/providers/supabase-provider";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
-import { Toaster, toaster } from "@/components/ui/toaster";
+import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
 import { useRouter } from "next/navigation";

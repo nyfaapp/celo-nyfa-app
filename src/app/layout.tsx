@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { Parkinsans } from "next/font/google";
 import "./globals.css";
-import { Provider } from "@/components/ui/provider";
-import Header from "@/components/ui/header";
-
+import { Provider } from "@/components/chakra/ui/provider";
 import { Web3Provider } from "@/providers/web3-provider";
 import "@coinbase/onchainkit/styles.css";
 import "./onchain-overrides.css";
-import { ColorModeProvider } from "@/components/ui/color-mode";
+import { ColorModeProvider } from "@/components/chakra/ui/color-mode";
 import SupabaseProvider from "@/providers/supabase-provider";
+import Header from "@/components/nyfa/header";
 
 const parkinsans = Parkinsans({
   subsets: ["latin"],

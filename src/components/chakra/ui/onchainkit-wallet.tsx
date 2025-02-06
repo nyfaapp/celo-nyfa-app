@@ -3,7 +3,7 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Avatar, Name } from "@coinbase/onchainkit/identity";
 
-import { Toaster, toaster } from "@/components/ui/toaster";
+import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 
 import {
   ConnectWallet,
