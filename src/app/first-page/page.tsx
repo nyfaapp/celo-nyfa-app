@@ -16,15 +16,30 @@ export default function FirstPage() {
   const [isCreatingAnonUser, setIsCreatingAnonUser] = useState(false);
 
   const { supabase } = useSupabase();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isDisconnected } = useAccount();
 
   const router = useRouter();
 
   useEffect(() => {
-    if (isConnected) {
-      router.replace("/all-nofas");
-    }
-  }, [isConnected, router]);
+    const checkUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (isDisconnected) {
+        router.replace("/not-connected");
+        return;
+      }
+
+      if (isConnected) {
+        if (user) {
+          router.replace("/all-nofas");
+        }
+      }
+    };
+
+    checkUser();
+  }, [isConnected, isDisconnected, router, supabase]);
 
   const handleAnonymousSignIn = async () => {
     setIsCreatingAnonUser(true);
