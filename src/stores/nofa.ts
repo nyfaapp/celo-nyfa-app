@@ -8,7 +8,7 @@ interface NoFAStore {
  allNofas: NoFA[];
  isLoading: boolean;
  isLoadingAll: boolean;
- setNoFA: (data: Partial<NoFA>) => void;
+ setNoFAFromData: (data: Partial<NoFA>) => void;
  resetNoFA: () => void;
  fetchUserNoFAs: (creatorAuthId: string) => Promise<void>;
  fetchAllNoFAs: () => Promise<void>;
@@ -21,7 +21,7 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
  allNofas: [],
  isLoading: false,
  isLoadingAll: false,
- setNoFA: (data) =>
+ setNoFAFromData: (data) =>
    set((state) => ({
      nofa: state.nofa ? { ...state.nofa, ...data } : (data as NoFA),
    })),
