@@ -2,49 +2,25 @@
 
 import { BodyLogoCreateYourNoFA } from "@/components/svg-icons/logos/body-logo-create-your-nofa";
 import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
-import {
-  Button,
-  Text,
-  Flex,
-  Box,
-  createListCollection,
-  Stack,
-} from "@chakra-ui/react";
+import { Text, Flex, Box, Button } from "@chakra-ui/react";
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Field } from "@/components/ui/field";
+
 import {
-  SelectContent,
-  SelectItem,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from "@/components/ui/select";
-import { Controller, useForm } from "react-hook-form";
-import { z } from "zod";
-
-const formSchema = z.object({
-  cryptocurrency: z.string({ message: "Crypto is required" }).array(),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+  Autocomplete,
+  AutocompleteSection,
+  AutocompleteItem,
+} from "@heroui/autocomplete";
+import { coins } from "../../../data/coins";
+import { useState } from "react";
+import PriceWithChart from "@/components/coin-perspective/price-with-chart";
 
 export default function CreateYourNoFA() {
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-  });
-
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const [coin, setCoin] = useState<string>("ethereum");
 
   return (
     <>
       <Flex
-        // ref={flexRef}
         justifyContent={"start"}
         alignItems={"center"}
         flexDirection={"column"}
@@ -54,7 +30,7 @@ export default function CreateYourNoFA() {
           color={"#0F1C33"}
           fontSize={"24px"}
           fontWeight={"bold"}
-          my={8}
+          my={12}
           mx={8}
         >
           Create* your NoFA
@@ -66,60 +42,46 @@ export default function CreateYourNoFA() {
           fontSize={"14px"}
           fontWeight={"normal"}
           mt={8}
+          mb={4}
         >
           Select and create
         </Text>
 
-        <Box my={8}>
-          <form onSubmit={onSubmit}>
-            <Stack gap="4" align="center">
-              <Field
-                invalid={!!errors.cryptocurrency}
-                errorText={errors.cryptocurrency?.message}
-                width="320px"
-              >
-                <Controller
-                  control={control}
-                  name="cryptocurrency"
-                  render={({ field }) => (
-                    <SelectRoot
-                      name={field.name}
-                      value={field.value}
-                      bgColor={"#0F1C33"}
-                      borderRadius={10}
-                      onValueChange={({ value }) => field.onChange(value)}
-                      onInteractOutside={() => field.onBlur()}
-                      collection={cryptocurrencies}
-                    >
-                      <SelectTrigger>
-                        <SelectValueText placeholder="Select crypto" ml={3} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {cryptocurrencies.items.map((movie) => (
-                          <SelectItem item={movie} key={movie.value}>
-                            {movie.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </SelectRoot>
-                  )}
-                />
-              </Field>
+        <Autocomplete
+          className="max-w-xs"
+          label="Select a coin"
+          defaultItems={coins}
+          defaultSelectedKey="ethereum"
+          isVirtualized
+          onSelectionChange={(key) => {
+            if (key) {
+              console.log("Selected:", key);
+              setCoin(key.toString());
+            }
+          }}
+          isRequired
+        >
+          {coins.map((coin) => (
+            <AutocompleteItem key={coin.id} textValue={coin.name}>
+              {coin.name} ({coin.symbol.toUpperCase()})
+            </AutocompleteItem>
+          ))}
+        </Autocomplete>
 
-              <Button
-                bgColor={"#FDBB23"}
-                borderRadius={15}
-                mt={4}
-                w={"4/6"}
-                type="submit"
-              >
-                <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-                  Create
-                </Text>
-              </Button>
-            </Stack>
-          </form>
-        </Box>
+  
+        <Button
+          bgColor={"#FDBB23"}
+          borderRadius={15}
+          mt={8}
+          w={"3/6"}
+
+          onClick={()=>console.log(coin)}
+
+        >
+          <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+            Create
+          </Text>
+        </Button>
       </Flex>
 
       <Box bg="#0F1C33" position="absolute" bottom="0" right="0" py={4}>
@@ -136,11 +98,3 @@ export default function CreateYourNoFA() {
     </>
   );
 }
-
-const cryptocurrencies = createListCollection({
-  items: [
-    { label: "Bitcoin", value: "bitcoin" },
-    { label: "Ethereum", value: "ethereum" },
-    { label: "Ripple", value: "xrp" },
-  ],
-});
