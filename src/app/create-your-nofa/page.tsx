@@ -9,43 +9,39 @@ import { useState } from "react";
 import { supabase } from "@/config/supabase";
 import { useNoFAStore } from "@/stores/nofa";
 import { useRouter } from "next/navigation";
+import { useSupabase } from "@/providers/supabase-provider";
+import { Toaster, toaster } from "@/components/chakra/ui/toaster";
+import { Spinner } from "@heroui/spinner";
 
 export default function CreateYourNoFA() {
   const [coinId, setCoinId] = useState<string>("ethereum");
+  const { user } = useSupabase();
+  const router = useRouter();
 
   const [coinTicker, setCoinTicker] = useState<string>("ETH");
 
+  const [isCreatingNoFA, setIsCreatingNoFA] = useState(false);
   const setNoFAData = useNoFAStore((state) => state.setNoFA);
-  const router = useRouter();
-  const nofa = useNoFAStore((state) => state.nofa);
 
   const createNoFAFn = async (coinId: string) => {
+    setIsCreatingNoFA(true);
     try {
       // 1. Get Coin Gecko Data
       const coinGeckoData = await (
         await fetch(`/api/coinGecko/${coinId}`)
       ).json();
 
-      console.log(coinGeckoData);
-
       // 2. Get Crypto News API Data
-
       const cryptoNewsAPIData = await (
         await fetch(`/api/cryptoNewsAPI/${coinTicker}`)
       ).json();
 
-      const headlines: Headline[] = cryptoNewsAPIData.map((item: NewsItem) => ({
-        title: item.title || null,
-        imageURL: item.image_url || null,
-        link: item.news_url || null,
-        sentiment: item.sentiment || null,
-      }));
+      const headlines: Headline[] = cryptoNewsAPIData;
 
-      console.log(headlines);
-
-      // Set data to store
+      // 3. Update store
       setNoFAData({
         coinId: coinGeckoData.coinId,
+        creatorAuthId: user?.id,
         coinImageURI: coinGeckoData.coinImageURI,
         marketCap: coinGeckoData.marketCap,
         totalSupply: coinGeckoData.totalSupply,
@@ -53,16 +49,36 @@ export default function CreateYourNoFA() {
         headlines,
       });
 
-      //
+      // 4. Add NoFA to database
+      const createdNoFA = await _insertNoFAInto({
+        coinId: coinGeckoData.coinId,
+        creatorAuthId: user?.id,
+        coinImageURI: coinGeckoData.coinImageURI,
+        marketCap: coinGeckoData.marketCap,
+        totalSupply: coinGeckoData.totalSupply,
+        circulatingSupply: coinGeckoData.circulatingSupply,
+        headlines,
+      });
 
-      // Navigate to next page
-      // router.push('/create-your-nofa/details');
+      toaster.create({
+        description: "NoFA successfully created.",
+        duration: 3000,
+        type: "success",
+      });
+      router.push(`/your-nofas/${createdNoFA.id}`);
     } catch (error) {
+      toaster.create({
+        description: "NoFA creation failed.",
+        duration: 3000,
+        type: "error",
+      });
       console.error("Error:", error);
+    } finally {
+      setIsCreatingNoFA(false);
     }
   };
 
-  const createNoFA = async (props: CreateNoFAProps) => {
+  const _insertNoFAInto = async (props: CreateNoFAProps): Promise<NoFA> => {
     const {
       coinId,
       creatorAuthId,
@@ -88,18 +104,45 @@ export default function CreateYourNoFA() {
         circulatingSupply,
         headlines,
       })
-      .select();
+      .select()
+      .single();
 
     if (error) {
       console.error("Error creating NoFA:", error);
       throw error;
     }
 
-    return data;
+    if (!data) {
+      throw new Error("No data returned from insert");
+    }
+
+    // Parse the returned data to match the NoFA interface
+    const parsedNoFA: NoFA = {
+      id: data.id,
+      coinId: data.coinId,
+      creatorAuthId: data.creatorAuthId || null,
+      txnHash: data.txnHash || null,
+      URI: data.URI || null,
+      coinImageURI: data.coinImageURI || null,
+      marketCap: data.marketCap || null,
+      totalSupply: data.totalSupply || null,
+      circulatingSupply: data.circulatingSupply || null,
+      headlines: data.headlines
+        ? data.headlines.map((headline: any) => ({
+            title: headline.title || null,
+            imageURL: headline.imageURL || null,
+            link: headline.link || null,
+            sentiment: headline.sentiment || null,
+          }))
+        : null,
+    };
+
+    return parsedNoFA;
   };
 
   return (
     <>
+      <Toaster />
       <Flex
         justifyContent={"start"}
         alignItems={"center"}
@@ -156,32 +199,16 @@ export default function CreateYourNoFA() {
           borderRadius={15}
           mt={8}
           w={"3/6"}
-          onClick={async () => {
-            console.log(coinId);
-            console.log(coinTicker);
-
-            createNoFAFn(coinId);
-            // Example usage
-            // const response = await fetch(`/api/coinGecko/${coinId}`);
-            // const data = await response.json();
-
-            // data will have: coinId, coinImageURI, marketCap, totalSupply, circulatingSupply
-          }}
+          onClick={() => createNoFAFn(coinId)}
         >
-          <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-            Create
-          </Text>
+          {isCreatingNoFA ? (
+            <Spinner size="sm" color="default" />
+          ) : (
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+              Get started
+            </Text>
+          )}
         </Button>
-
-        {/* <Text
-          color={"#0F1C33"}
-          fontSize={"14px"}
-          fontWeight={"normal"}
-          mt={8}
-          mb={4}
-        >
-          {nofa?.coinImageURI ?? "NoFA [coinImageURI] not set."}
-        </Text> */}
       </Flex>
 
       <Box bg="#0F1C33" position="absolute" bottom="0" right="0" py={4}>
