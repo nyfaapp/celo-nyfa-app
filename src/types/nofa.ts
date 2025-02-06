@@ -6,6 +6,7 @@ interface Headline {
 }
 
 interface NoFA {
+  id: string | null;
   coinId: string
   creatorAuthId: string | null | undefined; // UUID
   txnHash: string | null | undefined; // Transaction hash
