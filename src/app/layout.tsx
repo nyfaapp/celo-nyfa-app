@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
 import { Parkinsans } from "next/font/google";
 import "./globals.css";
-import { Provider } from "@/components/chakra/ui/provider";
-import { Web3Provider } from "@/providers/web3-provider";
 import "@coinbase/onchainkit/styles.css";
 import "./onchain-overrides.css";
-import { ColorModeProvider } from "@/components/chakra/ui/color-mode";
-import SupabaseProvider from "@/providers/supabase-provider";
-import Header from "@/components/nyfa/header";
-import ConnectAndAuthGuardProvider from "@/providers/connect-and-auth-guard-provider";
+import MainProvider from "@/providers/main-provider";
 
 const parkinsans = Parkinsans({
   subsets: ["latin"],
@@ -27,18 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${parkinsans.className} bg-white`}>
-        <Provider>
-          <Web3Provider>
-            <Header />
-            <ColorModeProvider forcedTheme="dark">
-              <SupabaseProvider>
-                <ConnectAndAuthGuardProvider>
-                  {children}
-                </ConnectAndAuthGuardProvider>
-              </SupabaseProvider>
-            </ColorModeProvider>
-          </Web3Provider>
-        </Provider>
+        <MainProvider>{children}</MainProvider>
       </body>
     </html>
   );
