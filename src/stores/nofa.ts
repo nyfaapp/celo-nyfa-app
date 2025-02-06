@@ -36,7 +36,7 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
           circulatingSupply,
           headlines
         `)
-        .eq('creatorAuhId', creatorAuthId);
+        .eq('creatorAuthId', creatorAuthId);
 
       if (error) {
         console.error('Error fetching user NoFAs:', error);
