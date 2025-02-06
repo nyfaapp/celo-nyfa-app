@@ -22,7 +22,7 @@ export default function CreateYourNoFA() {
   const [coinTicker, setCoinTicker] = useState<string>("ETH");
 
   const [isCreatingNoFA, setIsCreatingNoFA] = useState(false);
-  const setNoFAData = useNoFAStore((state) => state.setNoFA);
+  const setNoFAData = useNoFAStore((state) => state.setNoFAFromData);
 
   const createNoFAFn = async (coinId: string) => {
     setIsCreatingNoFA(true);
