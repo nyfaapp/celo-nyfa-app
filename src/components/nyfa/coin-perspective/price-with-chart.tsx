@@ -1,40 +1,42 @@
 "use client";
 
+import { Box } from "@chakra-ui/react";
+
 interface CoinPerspectiveProps {
-  coinId: string;
-  vs?: string; // optional, defaults to bitcoin
-  fx?: string; // optional, defaults to USD
-  theme?: "auto" | "light" | "dark"; // optional, defaults to auto
+  coinId?: string | null;
+  vs?: string;
+  fx?: string;
+  theme?: "auto" | "light" | "dark";
 }
 
 export default function PriceWithChart({
-  coinId,
+  coinId = "ethereum",
   vs = "bitcoin",
   fx = "USD",
   theme = "auto",
 }: CoinPerspectiveProps) {
-  const iframeUrl = `https://thecoinperspective.com/widgets/coin?c=${coinId}&vs=${vs}&fx=${fx}&stats=false&theme=${theme}`;
+  const iframeUrl = `https://thecoinperspective.com/widgets/coin?c=${coinId ?? "ethereum"}&vs=${vs}&fx=${fx}&stats=false&theme=${theme}`;
 
   return (
-    <iframe
-      src={iframeUrl}
-      height="380"
-      style={{
-        border: "none",
-        paddingLeft: "12px",
-        paddingRight: "12px",
-        width: "100%",
-
-      }}
-      allowTransparency={true}
-      onLoad={(e) => {
-        const iframe = e.target as HTMLIFrameElement;
-        if (iframe.contentWindow) {
-          iframe.style.height =
-            iframe.contentWindow.document.body.scrollHeight + 20 + "px";
-        }
-        
-      }}
-    />
+    <Box
+      w="full"
+      position="relative"
+      pt="56.25%" // This creates a 16:9 aspect ratio (9/16 = 0.5625)
+      borderRadius="15px"
+      overflow="hidden"
+      bg="#0F1C33"
+    >
+      <iframe
+        src={iframeUrl}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          border: 'none',
+        }}
+      />
+    </Box>
   );
 }
