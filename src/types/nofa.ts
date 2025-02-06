@@ -1,31 +1,31 @@
 interface Headline {
-  title: string | null;
-  imageURL: string | null;
-  link: string | null;
-  sentiment: "Positive" | "Negative" | "Neutral" | null
+  title: string | null | undefined;
+  imageURL: string | null | undefined;
+  link: string | null | undefined;
+  sentiment: "Positive" | "Negative" | "Neutral" | null;
 }
 
 interface NoFA {
   coinId: string
-  creatorAuhId: string; // UUID
-  txnHash: string | null; // Transaction hash
-  URI: string | null;
-  coinImageURI: string | null;
-  marketCap: number | null;
-  totalSupply: number | null;
-  circulatingSupply: number | null;
-  headlines: Headline[] | null; // Array of headline objects
+  creatorAuthId: string | null | undefined; // UUID
+  txnHash: string | null | undefined; // Transaction hash
+  URI: string | null | undefined;
+  coinImageURI: string | null | undefined;
+  marketCap: number | null | undefined;
+  totalSupply: number | null | undefined;
+  circulatingSupply: number | null | undefined;
+  headlines: Headline[] | null | undefined; // Array of headline objects
 }
 
 
 interface CreateNoFAProps {
     coinId: string;
-    creatorAuthId: string;
-    txnHash?: string | null;
-    URI?: string | null;
-    coinImageURI?: string | null;
-    marketCap?: number | null;
-    totalSupply?: number | null;
-    circulatingSupply?: number | null;
-    headlines?: Headline[] | null;
+    creatorAuthId: string | null | undefined;
+    txnHash?: string | null | undefined;
+    URI?: string | null | undefined;
+    coinImageURI?: string | null | undefined;
+    marketCap?: number | null | undefined;
+    totalSupply?: number | null | undefined;
+    circulatingSupply?: number | null | undefined;
+    headlines?: Headline[] | null | undefined;
   }
