@@ -1,34 +1,15 @@
 "use client";
 
+import { BodyLogoFirstPage } from "@/components/nyfa/svg-icons/logos/body-logo-first-page";
 import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
-import { useSupabase } from "@/providers/supabase-provider";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { useAccount } from "wagmi";
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
 
 export default function NotConnected() {
   const { isConnected, isDisconnected } = useAccount();
-  const router = useRouter();
-  const { supabase } = useSupabase();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (isConnected) {
-        if (!user) {
-          router.replace("/first-page");
-        } else {
-          router.replace("/all-nofas");
-        }
-      }
-    };
-
-    checkUser();
-  }, [isConnected, isDisconnected, router, supabase]);
   //   const flexRef = useRef(null);
 
   //   const downloadAsPNG = async () => {
@@ -83,7 +64,8 @@ export default function NotConnected() {
         flexDirection={"column"}
         h={"75vh"}
       >
-        <BodyLogoNotConnected />
+        {isConnected ? <BodyLogoFirstPage /> : <BodyLogoNotConnected />}
+
         <Text color={"#0F1C33"} fontSize={"40px"} fontWeight={"bold"} mt={8}>
           {isConnected ? "connected" : "not connected*"}
         </Text>
