@@ -3,8 +3,11 @@
 import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
 import { Button, Text, Flex, Box, HStack, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
+import { useRouter } from "next/navigation";
 
 export default function AllNoFAs() {
+  const router = useRouter();
+
   return (
     <>
       <Flex
@@ -20,7 +23,13 @@ export default function AllNoFAs() {
             All NoFAs*, Minted by Creators
           </Text>
 
-          <Button bgColor={"#FDBB23"} borderRadius={15} mt={4} w={"3/6"}>
+          <Button
+            bgColor={"#FDBB23"}
+            borderRadius={15}
+            mt={4}
+            w={"3/6"}
+            onClick={() => router.push("/create-your-nofa")}
+          >
             <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
               Create yours
             </Text>
