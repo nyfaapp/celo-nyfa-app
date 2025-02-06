@@ -5,7 +5,6 @@ import {
   WalletApiWalletResponseType,
 } from "@privy-io/server-auth";
 import { NextResponse } from "next/server";
-import test from "node:test";
 
 const privy = new PrivyClient(
   process.env.PRIVY_APP_ID!,
