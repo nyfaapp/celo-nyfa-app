@@ -8,6 +8,7 @@ import "./onchain-overrides.css";
 import { ColorModeProvider } from "@/components/chakra/ui/color-mode";
 import SupabaseProvider from "@/providers/supabase-provider";
 import Header from "@/components/nyfa/header";
+import ConnectAndAuthGuardProvider from "@/providers/connect-and-auth-guard-provider";
 
 const parkinsans = Parkinsans({
   subsets: ["latin"],
@@ -30,7 +31,11 @@ export default function RootLayout({
           <Web3Provider>
             <Header />
             <ColorModeProvider forcedTheme="dark">
-              <SupabaseProvider>{children}</SupabaseProvider>
+              <SupabaseProvider>
+                <ConnectAndAuthGuardProvider>
+                  {children}
+                </ConnectAndAuthGuardProvider>
+              </SupabaseProvider>
             </ColorModeProvider>
           </Web3Provider>
         </Provider>
