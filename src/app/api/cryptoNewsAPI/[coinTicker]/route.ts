@@ -45,12 +45,20 @@ export async function GET(request: NextRequest, props: { params: Promise<{ coinT
       return NextResponse.json([]);
     }
 
-    const headlines: Headline[] = data.data.map((item: NewsItem) => ({
-      title: item.title ? item.title : null,
-      imageURL: item.image_url ? item.image_url : null,
-      link: item.news_url ? item.news_url : null,
-      sentiment: item.sentiment ? item.sentiment : null,
-    }));
+    // Create a new array manually
+    const headlines = [];
+    
+    for (const item of data.data) {
+      headlines.push({
+        title: item.title,
+        imageURL: item.image_url,
+        link: item.news_url,
+        sentiment: item.sentiment
+      });
+    }
+
+    // Log the headlines before sending
+    console.log('Headlines to be sent:', headlines);
 
     return NextResponse.json(headlines);
   } catch (error) {
