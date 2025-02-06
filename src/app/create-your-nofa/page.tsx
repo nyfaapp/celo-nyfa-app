@@ -11,7 +11,7 @@ import {
   AutocompleteSection,
   AutocompleteItem,
 } from "@heroui/autocomplete";
-import { coins } from "../../../data/coins";
+import { coins } from "../../data/coins";
 import { useState } from "react";
 import PriceWithChart from "@/components/nyfa/coin-perspective/price-with-chart";
 
