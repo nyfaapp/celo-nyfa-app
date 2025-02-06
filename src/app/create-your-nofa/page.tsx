@@ -199,6 +199,7 @@ export default function CreateYourNoFA() {
           borderRadius={15}
           mt={8}
           w={"3/6"}
+          disabled={isCreatingNoFA}
           onClick={() => createNoFAFn(coinId)}
         >
           {isCreatingNoFA ? (
