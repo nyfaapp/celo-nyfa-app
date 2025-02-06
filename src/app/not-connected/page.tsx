@@ -1,6 +1,7 @@
 "use client";
 
 import { BodyLogoNotConnected } from "@/components/svg-icons/logos/body-logo-not-connected";
+import { useSupabase } from "@/providers/supabase-provider";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -11,14 +12,23 @@ import { useAccount } from "wagmi";
 export default function NotConnected() {
   const { isConnected, isDisconnected } = useAccount();
   const router = useRouter();
+  const { supabase } = useSupabase();
 
   useEffect(() => {
-    if (isConnected) {
-      router.replace("/all-nofas");
-    } else if (isDisconnected) {
-      router.replace("/not-connected");
-    }
-  }, [isConnected, isDisconnected, router]);
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (isConnected) {
+        if (!user) {
+          router.replace("/first-page");
+        } else {
+          router.replace("/all-nofas");
+        }
+      }
+    };
+
+    checkUser();
+  }, [isConnected, isDisconnected, router, supabase]);
   //   const flexRef = useRef(null);
 
   //   const downloadAsPNG = async () => {
