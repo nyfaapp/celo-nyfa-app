@@ -26,10 +26,8 @@ interface Headline {
   sentiment: "Positive" | "Negative" | "Neutral" | null;
 }
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { coinTicker: string } }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ coinTicker: string }> }) {
+  const params = await props.params;
   const { coinTicker } = params;
 
   try {

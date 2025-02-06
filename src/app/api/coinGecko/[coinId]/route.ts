@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
 type Props = {
-  params: {
+  params: Promise<{
     coinId: string;
-  };
+  }>;
 };
 
-export async function GET(request: NextRequest, { params }: Props) {
+export async function GET(request: NextRequest, props: Props) {
+  const params = await props.params;
   if (!params.coinId) {
     return NextResponse.json({ error: "Coin ID is required" }, { status: 400 });
   }
