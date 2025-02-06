@@ -3,6 +3,7 @@
 import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
+import { getColorForNoFA } from "@/utils/colorForNoFa";
 import { Button, Text, Flex, Box, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { Spinner } from "@heroui/spinner";
@@ -22,36 +23,6 @@ export default function YourNoFas() {
       fetchUserNoFAs(user.id);
     }
   }, []);
-
-  const getColorBySentiment = (sentiment: string) => {
-    switch (sentiment) {
-      case "positive":
-        return "#FDBB23"; // mustard
-      case "negative":
-        return "#EA5D5D"; // plum
-      case "neutral":
-      default:
-        return "#A9CEEB"; // sky blue
-    }
-  };
-  const getColorForNoFA = (headlines: Headline[] | null | undefined) => {
-    if (!headlines) {
-      return getColorBySentiment("neutral");
-    }
-
-    const sentimentCounts = headlines.reduce((acc: any, headline: any) => {
-      acc[headline.sentiment] = (acc[headline.sentiment] || 0) + 1;
-      return acc;
-    }, {});
-
-    const maxSentiment = Object.keys(sentimentCounts).reduce((a, b) =>
-      sentimentCounts[a] > sentimentCounts[b] ? a : b
-    );
-
-    return sentimentCounts[maxSentiment] > 1
-      ? getColorBySentiment(maxSentiment)
-      : getColorBySentiment("neutral");
-  };
 
   return (
     <>
@@ -97,18 +68,19 @@ export default function YourNoFas() {
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
               {userNofas.map((nofa, index) => (
-          <Link href={`/your-nofas/${nofa.id}`} key={index}>
-            <Box
-              bg={getColorForNoFA(nofa.headlines)}
-              height={"150px"}
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              borderRadius={"15px"}
-            >
-              <Text color="#0F1C33">NoFA #{index + 1}</Text>
-            </Box>
-          </Link>
+                <Link href={`/your-nofas/${nofa.id}`} key={index}>
+                  <Box
+                    bg={getColorForNoFA(nofa.headlines)}
+                    height={"150px"}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    borderRadius={"15px"}
+                    w={"full"}
+                  >
+                    <Text color="#0F1C33" m={4} textAlign={"center"}>{nofa.id}</Text>
+                  </Box>
+                </Link>
               ))}
             </SimpleGrid>
           )}
