@@ -1,10 +1,11 @@
 // store/nofa.ts
-import { supabase } from '@/config/supabase';
-import { create } from 'zustand';
+import { supabase } from "@/config/supabase";
+import { create } from "zustand";
 
 interface NoFAStore {
   nofa: NoFA | null;
   userNofas: NoFA[];
+  isLoading: boolean;
   setNoFA: (data: Partial<NoFA>) => void;
   resetNoFA: () => void;
   fetchUserNoFAs: (creatorAuthId: string) => Promise<void>;
@@ -14,18 +15,19 @@ interface NoFAStore {
 export const useNoFAStore = create<NoFAStore>((set) => ({
   nofa: null,
   userNofas: [],
-  setNoFA: (data) => 
+  isLoading: false,
+  setNoFA: (data) =>
     set((state) => ({
-      nofa: state.nofa 
-        ? { ...state.nofa, ...data }
-        : data as NoFA
+      nofa: state.nofa ? { ...state.nofa, ...data } : (data as NoFA),
     })),
   resetNoFA: () => set({ nofa: null }),
   fetchUserNoFAs: async (creatorAuthId: string) => {
+    set({ isLoading: true });
     try {
       const { data, error } = await supabase
-        .from('NOFAS')
-        .select(`
+        .from("NOFAS")
+        .select(
+          `
           coinId,
           creatorAuthId,
           txnHash,
@@ -35,19 +37,20 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
           totalSupply,
           circulatingSupply,
           headlines
-        `)
-        .eq('creatorAuthId', creatorAuthId);
+        `
+        )
+        .eq("creatorAuthId", creatorAuthId);
 
       if (error) {
-        console.error('Error fetching user NoFAs:', error);
+        console.error("Error fetching user NoFAs:", error);
         return;
       }
 
-      set({ userNofas: data as NoFA[] });
+      set({ userNofas: data as NoFA[], isLoading: false });
     } catch (error) {
-      console.error('Error in fetchUserNoFAs:', error);
-      set({ userNofas: [] });
+      console.error("Error in fetchUserNoFAs:", error);
+      set({ userNofas: [], isLoading: false });
     }
   },
-  setUserNoFAs: (nofas) => set({ userNofas: nofas })
+  setUserNoFAs: (nofas) => set({ userNofas: nofas }),
 }));

@@ -67,7 +67,7 @@ export default function YourParticularNoFA() {
         h={"75vh"}
       >
         <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
-          <Spinner size="sm" color="default" />
+          <Spinner size="sm"/>
         </Button>
       </Flex>
     </>

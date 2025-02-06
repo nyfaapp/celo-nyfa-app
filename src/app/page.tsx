@@ -12,7 +12,7 @@ export default function Home() {
       flexDirection={"column"}
       h={"75vh"}
     >
-      <Spinner size="sm" color="default" />
+      <Spinner size="sm" />
     </Flex>
   );
 }

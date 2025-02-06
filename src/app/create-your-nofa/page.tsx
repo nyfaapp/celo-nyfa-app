@@ -203,7 +203,7 @@ export default function CreateYourNoFA() {
           onClick={() => createNoFAFn(coinId)}
         >
           {isCreatingNoFA ? (
-            <Spinner size="sm" color="default" />
+            <Spinner size="sm" />
           ) : (
             <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
               Create

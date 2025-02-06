@@ -5,6 +5,7 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { Button, Text, Flex, Box, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
+import { Spinner } from "@heroui/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -12,7 +13,7 @@ import { useEffect } from "react";
 export default function YourNoFas() {
   const router = useRouter();
 
-  const { userNofas, fetchUserNoFAs } = useNoFAStore();
+  const { userNofas, fetchUserNoFAs, isLoading } = useNoFAStore();
 
   const { user } = useSupabase();
 
@@ -85,25 +86,29 @@ export default function YourNoFas() {
           />
         </Box>
         <Box flex={1} overflowY="auto" w="full" mb={4}>
-          {userNofas.length === 0 ? (
+          {isLoading ? (
+            <Flex justifyContent="center" alignItems="center" h="full">
+              <Spinner size="sm" />
+            </Flex>
+          ) : userNofas.length === 0 ? (
             <Text color="#0F1C33" fontSize="18px" textAlign="center" mt={8}>
               you have not created any NoFAs ... yet
             </Text>
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
               {userNofas.map((nofa, index) => (
-                <Link href={`/your-nofas/${nofa.id}`} key={index}>
-                  <Box
-                    bg={getColorForNoFA(nofa.headlines)}
-                    height={"150px"}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    borderRadius={"15px"}
-                  >
-                    <Text color="#0F1C33">NoFA #{index + 1}</Text>
-                  </Box>
-                </Link>
+          <Link href={`/your-nofas/${nofa.id}`} key={index}>
+            <Box
+              bg={getColorForNoFA(nofa.headlines)}
+              height={"150px"}
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              borderRadius={"15px"}
+            >
+              <Text color="#0F1C33">NoFA #{index + 1}</Text>
+            </Box>
+          </Link>
               ))}
             </SimpleGrid>
           )}

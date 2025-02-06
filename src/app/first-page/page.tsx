@@ -163,17 +163,13 @@ export default function FirstPage() {
           onClick={handleAnonymousSignIn}
         >
           {isCreatingAnonUser ? (
-            <Spinner size="sm" color="default" />
+            <Spinner size="sm"/>
           ) : (
             <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
               Get started
             </Text>
           )}
         </Button>
-
-        {/* <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
-          <Spinner size="sm" color="default" />
-        </Button> */}
       </Flex>
 
       <Box bg="#0F1C33" position="absolute" bottom="0" right="0" py={4}>
