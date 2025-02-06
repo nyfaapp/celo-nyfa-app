@@ -5,9 +5,9 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { Button, Text, Flex, Box } from "@chakra-ui/react";
 import { useAccount } from "wagmi";
 import { Toaster, toaster } from "@/components/ui/toaster";
-import { useState } from "react";
-import { set } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
+import { useRouter } from "next/navigation";
 
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
@@ -16,7 +16,15 @@ export default function FirstPage() {
   const [isCreatingAnonUser, setIsCreatingAnonUser] = useState(false);
 
   const { supabase } = useSupabase();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isConnected) {
+      router.replace("/all-nofas");
+    }
+  }, [isConnected, router]);
 
   const handleAnonymousSignIn = async () => {
     setIsCreatingAnonUser(true);
@@ -90,14 +98,16 @@ export default function FirstPage() {
         if (updatedUserAddPrivyWalletIdError)
           throw updatedUserAddPrivyWalletIdError;
 
-        supabase.from("CREATORS").insert([
+        const { error: insertError } = await supabase.from("CREATORS").insert([
           {
-            authId: updatedUserAddPrivyWalletId?.user.id,
+            authId: updatedUserAddPrivyWalletId?.user?.id,
             userWalletAddress: address,
             privyWalletAddress: _privyWalletAddress,
             privyWalletId: _privyWalletId,
           },
         ]);
+
+        if (insertError) throw insertError;
 
         toaster.create({
           description: "Successfully signed in with wallet!",
@@ -106,6 +116,8 @@ export default function FirstPage() {
         });
 
         setIsCreatingAnonUser(false);
+
+        router.push("/all-nofas");
 
         return;
       }
