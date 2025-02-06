@@ -71,17 +71,33 @@ export default function FirstPage() {
 
         console.log(response);
 
-        const { privyWalletId: _privyWalletId }: { privyWalletId: string } =
+        const {
+          privyWalletId: _privyWalletId,
+          privyWalletAddress: _privyWalletAddress,
+        }: { privyWalletId: string; privyWalletAddress: string } =
           await response.json();
 
         const {
           data: updatedUserAddPrivyWalletId,
           error: updatedUserAddPrivyWalletIdError,
         } = await supabase.auth.updateUser({
-          data: { privyWalletId: _privyWalletId },
+          data: {
+            privyWalletId: _privyWalletId,
+            privyWalletAddress: _privyWalletAddress,
+          },
         });
 
-        if (updatedUserAddPrivyWalletIdError) throw updatedUserAddPrivyWalletIdError;
+        if (updatedUserAddPrivyWalletIdError)
+          throw updatedUserAddPrivyWalletIdError;
+
+        supabase.from("CREATORS").insert([
+          {
+            authId: updatedUserAddPrivyWalletId?.user.id,
+            userWalletAddress: address,
+            privyWalletAddress: _privyWalletAddress,
+            privyWalletId: _privyWalletId,
+          },
+        ]);
 
         toaster.create({
           description: "Successfully signed in with wallet!",
@@ -93,7 +109,6 @@ export default function FirstPage() {
 
         return;
       }
-
     } catch (error) {
       setIsCreatingAnonUser(false);
 
