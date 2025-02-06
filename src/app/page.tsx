@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAccount } from "wagmi";
 import { Flex } from "@chakra-ui/react";
 import { Spinner } from "@heroui/spinner";
-import { useSupabase } from "@/app/providers/supabase-provider";
+import { useSupabase } from "@/providers/supabase-provider";
 
 export default function Home() {
   const { isConnected, isDisconnected } = useAccount();
@@ -14,24 +14,22 @@ export default function Home() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = (await supabase.auth.getUser()).data;
 
       if (isDisconnected) {
         router.replace("/not-connected");
-        return;
       }
 
-      if (isConnected) {
-        if (!user) {
-          router.replace("/first-page");
-        } else {
-          router.replace("/all-nofas");
-        }
+      if (isConnected && !user) {
+        router.replace("/first-page");
+      }
+
+      if (isConnected && user) {
+        router.replace("/all-nofas");
       }
     };
-
     checkUser();
-  }, [isConnected, isDisconnected, router, supabase]);
+  }, [isConnected, isDisconnected, router]);
 
   // Display a loading state while redirecting
   return (
