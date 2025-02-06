@@ -1,11 +1,11 @@
-interface Headline {
+export interface Headline {
   title: string | null | undefined;
   imageURL: string | null | undefined;
   link: string | null | undefined;
   sentiment: "Positive" | "Negative" | "Neutral" | null;
 }
 
-interface NoFA {
+export interface NoFA {
   id: string | null;
   coinId: string
   creatorAuthId: string | null | undefined; // UUID
@@ -19,7 +19,7 @@ interface NoFA {
 }
 
 
-interface CreateNoFAProps {
+export interface CreateNoFAProps {
     coinId: string;
     creatorAuthId: string | null | undefined;
     txnHash?: string | null | undefined;
