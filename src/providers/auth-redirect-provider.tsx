@@ -72,8 +72,10 @@ export default function AuthRedirectProvider({
           fontSize="14px"
           fontWeight="normal"
           mt={isRedirecting ? 4 : 0}
+          textAlign="center"
+          m={8}
         >
-          Connect to continue.
+          If you are connected, wait a bit - you are being redirected. If not, tap the Connect button.
         </Text>
       </Flex>
     );
