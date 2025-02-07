@@ -14,19 +14,24 @@ interface ETHPriceComparisonProps {
 export default function ETHPriceComparison({
   vs = "bitcoin",
   fx = "USD",
+  theme = "auto",
+  controls = false,
+  maxWidth = "full",
+  height = "305px",
 }: ETHPriceComparisonProps) {
-  const iframeUrl = `https://thecoinperspective.com/widgets/comparison?c=ethereum&vs=${vs}&fx=${fx}&controls=false&allowCoinSelect=false&theme=auto`;
+  const iframeUrl = `https://thecoinperspective.com/widgets/comparison?c=${vs}&vs=ethereum&fx=${fx}&controls=${controls}&allowCoinSelect=false&theme=${theme}`;
 
   return (
-    <Box w="full" position="relative" overflow="hidden" bg="#0F1C33" h={"305px"}>
+    <Box 
+      w="full" 
+      maxW={maxWidth}
+      position="relative" 
+      overflow="hidden" 
+      bg="#0F1C33" 
+      h={height}
+      data-testid="eth-price-comparison"
+    >
       <iframe
-        onLoad={(e) => {
-          const iframe = e.target as HTMLIFrameElement;
-          if (iframe.contentWindow?.document.body) {
-            iframe.style.height =
-              iframe.contentWindow.document.body.scrollHeight + 20 + "px";
-          }
-        }}
         src={iframeUrl}
         style={{
           border: "none",
