@@ -1,16 +1,9 @@
 "use client";
 
+import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
-import {
-  Button,
-  Text,
-  Flex,
-  Box,
-  HStack,
-  SimpleGrid,
-  Link,
-} from "@chakra-ui/react";
+import { Button, Text, Flex, Box, SimpleGrid, Link } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { Spinner } from "@heroui/spinner";
 import { useRouter } from "next/navigation";
@@ -18,11 +11,18 @@ import { useEffect } from "react";
 
 export default function AllNoFAs() {
   const router = useRouter();
-  const { allNofas, isLoadingAll, fetchAllNoFAs,setNoFAFromData } = useNoFAStore();
+  const { allNofas, isLoadingAll, fetchAllOtherNoFAs, setNoFAFromData } =
+    useNoFAStore();
+
+  const { user } = useSupabase();
 
   useEffect(() => {
-    fetchAllNoFAs();
-  }, []);
+    if (user) {
+      if (user.id) {
+        fetchAllOtherNoFAs(user.id);
+      }
+    }
+  }, [user]);
 
   return (
     <>
@@ -36,20 +36,34 @@ export default function AllNoFAs() {
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
           <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
-            All NoFAs*, Minted by Creators
+            All Other NoFAs*
           </Text>
 
-          <Button
-            bgColor={"#FDBB23"}
-            borderRadius={15}
-            mt={4}
-            w={"3/6"}
-            onClick={() => router.push("/create-your-nofa")}
-          >
-            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-              Create yours
-            </Text>
-          </Button>
+          <Flex direction={"row"} justify={"space-between"} px={4}>
+            <Button
+              bgColor={"#EA5D5D"}
+              borderRadius={15}
+              mt={4}
+              w={"2/6"}
+              onClick={() => router.push("/your-nofas")}
+            >
+              <Text color={"white"} fontSize={"14px"} fontWeight={"normal"}>
+                View yours
+              </Text>
+            </Button>
+
+            <Button
+              bgColor={"#A9CEEB"}
+              borderRadius={15}
+              mt={4}
+              w={"2/6"}
+              onClick={() => router.push("/create-your-nofa")}
+            >
+              <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+                Create yours
+              </Text>
+            </Button>
+          </Flex>
 
           <Divider
             className="my-4 px-8"
@@ -64,7 +78,7 @@ export default function AllNoFAs() {
             </Flex>
           ) : allNofas.length === 0 ? (
             <Text color="#0F1C33" fontSize="18px" textAlign="center" mt={8}>
-              No NoFAs have been created yet
+              you have not created any NoFAs ... yet
             </Text>
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
@@ -78,9 +92,11 @@ export default function AllNoFAs() {
                     justifyContent="center"
                     borderRadius={"15px"}
                     w={"full"}
-                    onClick={()=>setNoFAFromData(nofa)}
+                    onClick={() => setNoFAFromData(nofa)}
                   >
-                    <Text color="#0F1C33" m={4} textAlign={"center"}>{nofa.id}</Text>
+                    <Text color="#0F1C33" m={4} textAlign={"center"}>
+                      {nofa.id}
+                    </Text>
                   </Box>
                 </Link>
               ))}

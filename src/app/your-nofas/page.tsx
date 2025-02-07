@@ -39,17 +39,31 @@ export default function YourNoFas() {
             Your NoFAs*, Created by You
           </Text>
 
-          <Button
-            bgColor={"#FDBB23"}
-            borderRadius={15}
-            mt={4}
-            w={"3/6"}
-            onClick={() => router.push("/create-your-nofa")}
-          >
-            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-              Create yours
-            </Text>
-          </Button>
+          <Flex direction={"row"} justify={"space-between"} px={4}>
+            <Button
+              bgColor={"#EA5D5D"}
+              borderRadius={15}
+              mt={4}
+              w={"2/6"}
+              onClick={() => router.push("/all-nofas")}
+            >
+              <Text color={"white"} fontSize={"14px"} fontWeight={"normal"}>
+                View all
+              </Text>
+            </Button>
+
+            <Button
+              bgColor={"#A9CEEB"}
+              borderRadius={15}
+              mt={4}
+              w={"2/6"}
+              onClick={() => router.push("/create-your-nofa")}
+            >
+              <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+                Create yours
+              </Text>
+            </Button>
+          </Flex>
 
           <Divider
             className="my-4 px-8"
