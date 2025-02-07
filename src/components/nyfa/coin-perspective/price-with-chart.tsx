@@ -22,7 +22,7 @@ export default function PriceWithChart({
       w="full"
       position="relative"
       pt="56.25%" // This creates a 16:9 aspect ratio (9/16 = 0.5625)
-      borderRadius="15px"
+      // borderRadius="15px"
       overflow="hidden"
       bg="#0F1C33"
     >
@@ -34,7 +34,6 @@ export default function PriceWithChart({
           left: 0,
           width: '100%',
           height: '100%',
-          border: 'none',
         }}
       />
     </Box>
