@@ -1,8 +1,15 @@
 "use client";
 
+import ETHPriceComparison from "@/components/nyfa/coin-perspective/eth-price-comparison";
 import PriceWithChart from "@/components/nyfa/coin-perspective/price-with-chart";
-import { DownloadIcon } from "@/components/nyfa/svg-icons/download-icons";
+import { DownloadIcon } from "@/components/nyfa/svg-icons/download-icon";
+import { LatestHeadlinesIcon } from "@/components/nyfa/svg-icons/latest-headlines-icon";
+import { LoveIcon } from "@/components/nyfa/svg-icons/love-icon";
+import { SmileyIcon } from "@/components/nyfa/svg-icons/smiley-icon";
+import { StarIcon } from "@/components/nyfa/svg-icons/star-icon";
+import { TokenomicsIcon } from "@/components/nyfa/svg-icons/tokenomics-icon";
 import { useNoFAStore } from "@/stores/nofa";
+import { getColorForHeadline, getColorForNoFA } from "@/utils/colorForNoFa";
 import { Button, Text, Flex, Box, Image } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 
@@ -64,7 +71,7 @@ export default function ParticularNoFA() {
         justifyContent={"start"}
         alignItems={"left"}
         flexDirection={"column"}
-        h={"75vh"}
+        minH="100vh"
         px={4}
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} mb={4}>
@@ -96,39 +103,218 @@ export default function ParticularNoFA() {
         <Flex
           bgColor={"#E2E8F0"}
           borderRadius={"10px"}
+          borderColor={"#0F1C33"}
+          borderWidth={"1px"}
           direction={"column"}
           p={2}
+          mb={8}
         >
           <Flex direction={"row"} justifyContent={"space-between"}>
             <Image
               rounded="md"
               src={nofa?.coinImageURI ?? undefined}
-              alt="Coin image"
+              alt="Coin"
               width={"50px"}
+              color={"#0F1C33"}
+              fontSize={"10px"}
             />
 
             <Text color={"#EA5D5D"} fontSize={"22px"} fontWeight={"bold"}>
               {nofa?.id?.substring(0, 3) ?? null} {nofa?.coinId ?? null}
             </Text>
-
-            {/* <Button
-              bgColor={"#FDBB23"}
-              borderRadius={15}
-              w={"2/6"}
-              // onClick={() => router.push("/create-your-nofa")}
-            >
-              <>
-                <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"medium"}>
-                  Download
-                </Text>
-                <DownloadIcon />
-              </>
-            </Button> */}
           </Flex>
 
           <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
 
-          <PriceWithChart coinId={nofa?.coinId ?? null} />
+          <Flex direction={"row"} mt={2} p={2}>
+            <StarIcon />
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              Token price and chart
+            </Text>
+          </Flex>
+
+          <Box py={2}>
+            <PriceWithChart coinId={nofa?.coinId ?? null} />
+          </Box>
+
+          <Flex direction={"row"} mt={2} p={2}>
+            <SmileyIcon />
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              What if your crypto was like ETH?
+            </Text>
+          </Flex>
+
+          <Box py={2}>
+            <ETHPriceComparison vs={nofa?.coinId ?? null} />
+          </Box>
+
+          <Flex direction={"row"} p={2} justify={"end"}>
+            {/* <SmileyIcon /> */}
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"12px"}
+              fontWeight={"normal"}
+              ml={2}
+            >
+              via TheCoinPerspective
+            </Text>
+          </Flex>
+          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
+
+          <Flex direction={"row"} mt={2} p={2}>
+            <TokenomicsIcon />
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              Tokenomics
+            </Text>
+          </Flex>
+
+          <Flex direction={"row"} p={2} justify={"space-between"}>
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+              Market cap
+            </Text>
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              USD {nofa?.marketCap?.toLocaleString()}
+            </Text>
+          </Flex>
+          <Flex direction={"row"} mt={2} p={2} justify={"space-between"}>
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+              Total supply
+            </Text>
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              USD {nofa?.totalSupply?.toLocaleString()}
+            </Text>
+          </Flex>
+          <Flex direction={"row"} mt={2} p={2} justify={"space-between"}>
+            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
+              Circulating supply
+            </Text>
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              {nofa?.circulatingSupply?.toLocaleString()}
+            </Text>
+          </Flex>
+          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
+
+          <Flex direction={"row"} mt={2} p={2}>
+            <LatestHeadlinesIcon />
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"16px"}
+              fontWeight={"bold"}
+              ml={2}
+            >
+              Latest Headlines
+            </Text>
+          </Flex>
+
+          {nofa?.headlines?.map((headline, index) => (
+            <Flex
+              key={index}
+              direction={"row"}
+              mt={2}
+              mb={1}
+              p={4}
+              bgColor={getColorForHeadline(headline)}
+              h={"150px"}
+              borderRadius={"10px"}
+              justify={"center"}
+            >
+              <Image
+                rounded="md"
+                src={headline.imageURL ?? undefined}
+                alt="Coin"
+                width={"100px"}
+                color={"#0F1C33"}
+                fontSize={"10px"}
+              />
+
+              <Text
+                color={"#0F1C33"}
+                fontSize={"16px"}
+                fontWeight={"normal"}
+                ml={2}
+                textAlign={"left"}
+                alignSelf={"center"}
+              >
+                {headline.title ?? ""}
+              </Text>
+            </Flex>
+          ))}
+
+          <Flex direction={"row"} p={2} justify={"end"}>
+            {/* <SmileyIcon /> */}
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"12px"}
+              fontWeight={"normal"}
+              ml={2}
+            >
+              via CryptonewsAPI
+            </Text>
+          </Flex>
+
+          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
+
+          <Flex direction={"row"} p={2} justify={"center"} mt={2}>
+            {/* <SmileyIcon /> */}
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"12px"}
+              fontWeight={"normal"}
+              mr={2}
+            >
+              Made with
+            </Text>
+            <LoveIcon />
+
+            <Text
+              color={"#0F1C33"}
+              fontSize={"12px"}
+              fontWeight={"normal"}
+              ml={2}
+            >
+              on the Nyfa App
+            </Text>
+          </Flex>
         </Flex>
       </Flex>
     </>
