@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.7.0",
+    "@coinbase/agentkit": "^0.1.1",
+    "@coinbase/agentkit-langchain": "^0.1.0",
     "@coinbase/onchainkit": "^0.36.9",
     "@emotion/react": "^11.14.0",
     "@heroui/autocomplete": "^2.3.11",
@@ -18,6 +20,9 @@
     "@heroui/system": "^2.4.7",
     "@heroui/theme": "^2.4.6",
     "@hookform/resolvers": "^3.10.0",
+    "@langchain/core": "^0.3.38",
+    "@langchain/langgraph": "^0.2.45",
+    "@langchain/openai": "^0.4.2",
     "@privy-io/server-auth": "^1.18.4",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.48.1",
