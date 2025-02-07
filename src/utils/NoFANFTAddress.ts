@@ -1,0 +1,1 @@
+export const NoFANFTAddress = "0x1050Dd7ABB5E83e9ec2f7cE29254AFF4e6e58da2";
