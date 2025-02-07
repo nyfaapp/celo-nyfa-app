@@ -128,6 +128,7 @@ export default function CreateYourNoFA() {
       marketCap: data.marketCap || null,
       totalSupply: data.totalSupply || null,
       circulatingSupply: data.circulatingSupply || null,
+      timeCreated: data.timeCreated || null,
       headlines: data.headlines
         ? data.headlines.map((headline: any) => ({
             title: headline.title || null,
