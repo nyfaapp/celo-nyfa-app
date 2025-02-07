@@ -20,10 +20,6 @@ export async function POST(request: Request) {
   try {
     const { privyWalletId, userWalletAddress, authId } = await request.json();
 
-    console.log("userWalletAddress:", userWalletAddress);
-    console.log("authId:", authId);
-    console.log("privyWalletId:", privyWalletId);
-
     if (!userWalletAddress || !authId) {
       return NextResponse.json(
         {
@@ -57,8 +53,6 @@ export async function POST(request: Request) {
     }
 
     const wallet = await privy.walletApi.create({ chainType: "ethereum" });
-
-    console.log("New wallet id:", wallet.id)
 
     return NextResponse.json(
       {
