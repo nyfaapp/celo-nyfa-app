@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useSupabase } from "./supabase-provider";
 import { useAccount } from "wagmi";
+import { Text, Flex, Spinner } from "@chakra-ui/react";
 
 export default function AuthRedirectProvider({
   children,
@@ -13,9 +14,9 @@ export default function AuthRedirectProvider({
   const { isConnected } = useAccount();
   const router = useRouter();
   const pathname = usePathname();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const previousConnected = useRef(isConnected);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
-  // Base protected routes
   const protectedBaseRoutes = [
     "/all-nofas",
     "/create-your-nofa",
@@ -23,11 +24,9 @@ export default function AuthRedirectProvider({
   ];
 
   const isProtectedRoute = () => {
-    // Check base routes
     const isBaseRoute = protectedBaseRoutes.some((route) => pathname === route);
     if (isBaseRoute) return true;
 
-    // Check dynamic routes
     const isAllNofasDetail = pathname?.startsWith("/all-nofas/");
     const isYourNofasDetail = pathname?.startsWith("/your-nofas/");
 
@@ -35,64 +34,49 @@ export default function AuthRedirectProvider({
   };
 
   useEffect(() => {
-    const initTimer = setTimeout(() => {
-      setIsInitialized(true);
-    }, 500);
-
-    return () => clearTimeout(initTimer);
-  }, []);
+    if (previousConnected.current && !isConnected) {
+      setIsRedirecting(true);
+      router.replace("/first-page");
+    }
+    previousConnected.current = isConnected;
+  }, [isConnected]);
 
   useEffect(() => {
-    if (!isInitialized) return;
-
-    // Handle root route
     if (pathname === "/") {
-      if (!user) {
-        router.push("/first-page");
+      setIsRedirecting(true);
+      if (!user || !isConnected) {
+        router.replace("/first-page");
       } else {
-        router.push("/all-nofas");
+        router.replace("/all-nofas");
       }
-      return;
+    } else {
+      setIsRedirecting(false);
     }
+  }, [pathname]);
 
-    // Handle first-page redirect for authenticated and connected users
-    if (pathname === "/first-page" && user && isConnected) {
-      router.push("/all-nofas");
-      return;
-    }
-
-    // Only handle redirects for protected routes
-    if (isProtectedRoute()) {
-      if (!isConnected) {
-        router.push("/first-page");
-        return;
-      }
-
-      if (!user) {
-        router.push("/first-page");
-        return;
-      }
-    }
-  }, [user, isConnected, pathname, router, isInitialized]);
-
-  // During initialization, render children to prevent flicker
-  if (!isInitialized) {
-    return <>{children}</>;
-  }
-
-  // For first-page, check if user should be redirected
   if (pathname === "/first-page") {
-    if (user && isConnected) {
-      return null;
-    }
     return <>{children}</>;
   }
 
-  // For protected routes, require both auth and connection
-  if (isProtectedRoute()) {
-    if (!isConnected || !user) {
-      return null;
-    }
+  if (isProtectedRoute() && (!user || !isConnected)) {
+    return (
+      <Flex
+        justifyContent={"center"}
+        alignItems={"center"}
+        flexDirection={"column"}
+        h={"75vh"}
+      >
+        {isRedirecting && <Spinner size="sm" />}
+        <Text
+          color="#0F1C33"
+          fontSize="14px"
+          fontWeight="normal"
+          mt={isRedirecting ? 4 : 0}
+        >
+          Connect to continue.
+        </Text>
+      </Flex>
+    );
   }
 
   return <>{children}</>;
