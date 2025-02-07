@@ -78,7 +78,6 @@ export default function FirstPage() {
           }),
         });
 
-        console.log(response);
 
         const {
           privyWalletId: _privyWalletId,
