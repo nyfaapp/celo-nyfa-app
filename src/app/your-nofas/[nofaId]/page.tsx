@@ -1,6 +1,7 @@
 "use client";
 
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
+import AgentStreamComponent from "@/components/nyfa/agent-stream";
 import CoinInfo from "@/components/nyfa/components/coin-info";
 import CoinPerspectiveSection from "@/components/nyfa/components/coin-perspective";
 import Footer from "@/components/nyfa/components/footer";
@@ -9,6 +10,7 @@ import NoFAHeader from "@/components/nyfa/components/nofa-header";
 import TokenomicsSection from "@/components/nyfa/components/tokenomics-section";
 import { LoveIcon } from "@/components/nyfa/svg-icons/love-icon";
 import { useSupabase } from "@/providers/supabase-provider";
+import { useCreatorStore } from "@/stores/creator";
 import { useNoFAStore } from "@/stores/nofa";
 import { Text, Flex, Button } from "@chakra-ui/react";
 import { Spinner } from "@heroui/spinner";
@@ -24,6 +26,9 @@ export default function YourParticularNoFA() {
 
   const { user, supabase } = useSupabase();
 
+    const creator = useCreatorStore(state => state.creator)
+  
+
   const uploadToIPFS = async () => {
     setIsCreatingNFT(true);
 
@@ -32,54 +37,50 @@ export default function YourParticularNoFA() {
     try {
       const formData = new FormData();
 
-      if (!nofa?.ipfsURI) {
-        if (file) {
-          formData.append("file", file);
-          const response = await fetch("/api/uploadToPinata", {
-            method: "POST",
-            body: formData,
-          });
+      if (file) {
+        formData.append("file", file);
+        formData.append(
+          "name",
+          `NoFA ${nofa?.id?.substring(0, 3)}-${nofa?.coinId?.substring(0, 3)}`
+        );
 
-          if (!response.ok) {
-            throw new Error("Failed to upload to Pinata");
-          }
+        const response = await fetch("/api/uploadToPinata", {
+          method: "POST",
+          body: formData,
+        });
 
-          const fromPinata = await response.json();
-          console.log("Uploaded to IPFS:", fromPinata.ipfsHash);
-
-          const ipfsHash: string = fromPinata.ipfsHash;
-
-          const { data, error } = await supabase
-            .from("NOFAS")
-            .update({ ipfsURI: `ipfs://${ipfsHash}` })
-            .eq("id", nofa?.id) // Assuming nofa.id is the identifier for the record
-            .single();
-
-          const updatedNofa = {
-            ...nofa,
-            ipfsURI: `ipfs://${ipfsHash}`,
-          };
-
-          setNoFAFromData(updatedNofa);
-
-          if (error) throw error;
-
-          toaster.create({
-            description: "Uploaded to IPFS and updated in database",
-            duration: 3000,
-            type: "success",
-          });
-        } else {
-          toaster.create({
-            description:
-              "No file exists. Download the NoFA first before you create an NFT.",
-            duration: 3000,
-            type: "info",
-          });
+        if (!response.ok) {
+          throw new Error("Failed to upload to Pinata");
         }
+
+        const fromPinata = await response.json();
+
+        const ipfsHash: string = fromPinata.ipfsHash;
+
+        const { data, error } = await supabase
+          .from("NOFAS")
+          .update({ ipfsURI: `ipfs://${ipfsHash}` })
+          .eq("id", nofa?.id) // Assuming nofa.id is the identifier for the record
+          .single();
+
+        const updatedNofa = {
+          ...nofa,
+          ipfsURI: `ipfs://${ipfsHash}`,
+        };
+
+        setNoFAFromData(updatedNofa);
+
+        if (error) throw error;
+
+        toaster.create({
+          description: "Uploaded to IPFS and updated in database",
+          duration: 3000,
+          type: "success",
+        });
       } else {
         toaster.create({
-          description: "This NoFA already exists as an NFT",
+          description:
+            "No file exists. Download the NoFA first before you create an NFT.",
           duration: 3000,
           type: "info",
         });
@@ -299,7 +300,7 @@ export default function YourParticularNoFA() {
           isDownloading={isDownloading}
         />
 
-        {!nofa?.ipfsURI && nofa?.creatorAuthId === user?.id? (
+        {!nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
           <Button
             bgColor="#A9CEEB"
             borderRadius={15}
@@ -321,6 +322,10 @@ export default function YourParticularNoFA() {
             )}
           </Button>
         ) : null}
+
+        <AgentStreamComponent
+          privyWalletId={creator?.privyWalletId!}
+        />
 
         <Flex
           bgColor="#E2E8F0"
