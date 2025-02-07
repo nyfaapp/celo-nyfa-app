@@ -181,7 +181,6 @@ export default function CreateYourNoFA() {
             if (key) {
               const selectedCoin = coins.find((coin) => coin.id === key);
               if (selectedCoin) {
-                console.log("Selected:", key);
                 setCoinId(key.toString());
                 setCoinTicker(selectedCoin.symbol.toUpperCase());
               }
