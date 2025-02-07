@@ -10,7 +10,7 @@ export interface NoFA {
   coinId: string
   creatorAuthId: string | null | undefined; // UUID
   txnHash: string | null | undefined; // Transaction hash
-  URI: string | null | undefined;
+  ipfsURI: string | null | undefined;
   coinImageURI: string | null | undefined;
   marketCap: number | null | undefined;
   totalSupply: number | null | undefined;
@@ -24,7 +24,7 @@ export interface CreateNoFAProps {
     coinId: string;
     creatorAuthId: string | null | undefined;
     txnHash?: string | null | undefined;
-    URI?: string | null | undefined;
+    ipfsURI?: string | null | undefined;
     coinImageURI?: string | null | undefined;
     marketCap?: number | null | undefined;
     totalSupply?: number | null | undefined;
