@@ -83,22 +83,26 @@ export default function AllNoFAs() {
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
               {allNofas.map((nofa, index) => (
-                <Link href={`/your-nofas/${nofa.id}`} key={index}>
-                  <Box
-                    bg={getColorForNoFA(nofa.headlines)}
-                    height={"150px"}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    borderRadius={"15px"}
-                    w={"full"}
-                    onClick={() => setNoFAFromData(nofa)}
-                  >
-                    <Text color="#0F1C33" m={4} textAlign={"center"}>
-                      {nofa.id}
-                    </Text>
-                  </Box>
-                </Link>
+                <Box
+                  bg={getColorForNoFA(nofa.headlines)}
+                  height={"150px"}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  borderRadius={"15px"}
+                  w={"full"}
+                  key={index}
+                  onClick={async () => {
+                    setNoFAFromData(nofa);
+                    // Give a tiny delay to ensure state is updated
+                    await new Promise((resolve) => setTimeout(resolve, 0));
+                    router.push(`/your-nofas/${nofa.id}`);
+                  }}
+                >
+                  <Text color="#0F1C33" m={4} textAlign={"center"}>
+                    {nofa.id}
+                  </Text>
+                </Box>
               ))}
             </SimpleGrid>
           )}
