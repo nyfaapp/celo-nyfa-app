@@ -1,11 +1,11 @@
 "use client";
 
-import { BodyLogoFirstPage } from "@/components/nyfa/svg-icons/logos/body-logo-first-page";
-import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
+import PriceWithChart from "@/components/nyfa/coin-perspective/price-with-chart";
+import { DownloadIcon } from "@/components/nyfa/svg-icons/download-icons";
 import { useNoFAStore } from "@/stores/nofa";
-import { Button, Text, Flex, Box } from "@chakra-ui/react";
-import { Spinner } from "@heroui/spinner";
-import { useAccount } from "wagmi";
+import { Button, Text, Flex, Box, Image } from "@chakra-ui/react";
+import { Divider } from "@heroui/divider";
+
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
 
@@ -61,14 +61,75 @@ export default function ParticularNoFA() {
     <>
       <Flex
         // ref={flexRef}
-        justifyContent={"center"}
-        alignItems={"center"}
+        justifyContent={"start"}
+        alignItems={"left"}
         flexDirection={"column"}
         h={"75vh"}
+        px={4}
       >
-        <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
+        <Box w="full" textAlign="center" pt={4} position={"static"} mb={4}>
+          <Flex direction={"row"} justifyContent={"space-between"}>
+            <Text color={"#0F1C33"} fontSize={"22px"} fontWeight={"bold"}>
+              Your NoFA
+            </Text>
+
+            <Button
+              bgColor={"#FDBB23"}
+              borderRadius={15}
+              w={"2/6"}
+              // onClick={() => router.push("/create-your-nofa")}
+            >
+              <>
+                <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"medium"}>
+                  Download
+                </Text>
+                <DownloadIcon />
+              </>
+            </Button>
+          </Flex>
+        </Box>
+
+        {/* <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
           <Spinner size="sm"/>
-        </Button>
+        </Button> */}
+
+        <Flex
+          bgColor={"#E2E8F0"}
+          borderRadius={"10px"}
+          direction={"column"}
+          p={2}
+        >
+          <Flex direction={"row"} justifyContent={"space-between"}>
+            <Image
+              rounded="md"
+              src={nofa?.coinImageURI ?? undefined}
+              alt="Coin image"
+              width={"50px"}
+            />
+
+            <Text color={"#EA5D5D"} fontSize={"22px"} fontWeight={"bold"}>
+              {nofa?.id?.substring(0, 3) ?? null} {nofa?.coinId ?? null}
+            </Text>
+
+            {/* <Button
+              bgColor={"#FDBB23"}
+              borderRadius={15}
+              w={"2/6"}
+              // onClick={() => router.push("/create-your-nofa")}
+            >
+              <>
+                <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"medium"}>
+                  Download
+                </Text>
+                <DownloadIcon />
+              </>
+            </Button> */}
+          </Flex>
+
+          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
+
+          <PriceWithChart coinId={nofa?.coinId ?? null} />
+        </Flex>
       </Flex>
     </>
   );
