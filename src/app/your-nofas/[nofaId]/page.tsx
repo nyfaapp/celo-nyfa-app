@@ -1,13 +1,17 @@
 "use client";
 
+import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import CoinInfo from "@/components/nyfa/components/coin-info";
 import CoinPerspectiveSection from "@/components/nyfa/components/coin-perspective";
 import Footer from "@/components/nyfa/components/footer";
 import HeadlineSection from "@/components/nyfa/components/headline-section";
 import NoFAHeader from "@/components/nyfa/components/nofa-header";
 import TokenomicsSection from "@/components/nyfa/components/tokenomics-section";
+import { LoveIcon } from "@/components/nyfa/svg-icons/love-icon";
+import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
-import { Text, Flex } from "@chakra-ui/react";
+import { Text, Flex, Button } from "@chakra-ui/react";
+import { Spinner } from "@heroui/spinner";
 import html2canvas from "html2canvas";
 import { useRef, useState } from "react";
 
@@ -15,22 +19,80 @@ export default function YourParticularNoFA() {
   const { nofa } = useNoFAStore();
   const flexRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isCreatingNFT, setIsCreatingNFT] = useState(false);
+  const setNoFAFromData = useNoFAStore((state) => state.setNoFAFromData);
 
-  // const takeScreenshot = async () => {
-  //   const element = document.body; // or a specific div
-  //   const canvas = await html2canvas(element);
-  //   const image = canvas.toDataURL("image/png");
+  const { user, supabase } = useSupabase();
 
-  //   // Optional: Download the image
-  //   const link = document.createElement('a');
-  //   link.download = 'screenshot.png';
-  //   link.href = image;
-  //   link.click();
-  // };
+  const uploadToIPFS = async () => {
+    setIsCreatingNFT(true);
 
-  const downloadAsPNG = async () => {
-    if (!flexRef.current) return;
-    setIsDownloading(true);
+    const file = await createNoFAPNG();
+
+    try {
+      const formData = new FormData();
+
+      if (!nofa?.ipfsURI) {
+        if (file) {
+          formData.append("file", file);
+          const response = await fetch("/api/uploadToPinata", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to upload to Pinata");
+          }
+
+          const fromPinata = await response.json();
+          console.log("Uploaded to IPFS:", fromPinata.ipfsHash);
+
+          const ipfsHash: string = fromPinata.ipfsHash;
+
+          const { data, error } = await supabase
+            .from("NOFAS")
+            .update({ ipfsURI: `ipfs://${ipfsHash}` })
+            .eq("id", nofa?.id) // Assuming nofa.id is the identifier for the record
+            .single();
+
+          const updatedNofa = {
+            ...nofa,
+            ipfsURI: `ipfs://${ipfsHash}`,
+          };
+
+          setNoFAFromData(updatedNofa);
+
+          if (error) throw error;
+
+          toaster.create({
+            description: "Uploaded to IPFS and updated in database",
+            duration: 3000,
+            type: "success",
+          });
+        } else {
+          toaster.create({
+            description:
+              "No file exists. Download the NoFA first before you create an NFT.",
+            duration: 3000,
+            type: "info",
+          });
+        }
+      } else {
+        toaster.create({
+          description: "This NoFA already exists as an NFT",
+          duration: 3000,
+          type: "info",
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading to IPFS image:", error);
+    } finally {
+      setIsCreatingNFT(false);
+    }
+  };
+
+  const createNoFAPNG = async () => {
+    if (!flexRef.current) return null;
 
     try {
       // Initial delay for React rendering
@@ -168,26 +230,63 @@ export default function YourParticularNoFA() {
       // Remove container
       document.body.removeChild(container);
 
-      // Convert to PNG and download
+      // Convert to PNG and create File
       const finalImage = canvas.toDataURL("image/png", 1.0);
-      const link = document.createElement("a");
-      const date = new Date();
+      const blob = await (await fetch(finalImage)).blob();
 
-      link.download = `${nofa?.id?.substring(0, 3)}-${nofa?.coinId?.substring(
+      // Create and return File object
+      const filename = `${nofa?.id?.substring(0, 3)}-${nofa?.coinId?.substring(
         0,
         3
-      )}-${date.getTime()}.png`;
-      link.href = finalImage;
-      link.click();
+      )}-${Date.now()}.png`;
+      return new File([blob], filename, { type: "image/png" });
     } catch (error) {
       console.error("Error generating image:", error);
-    } finally {
-      setIsDownloading(false);
+      return null;
     }
+  };
+
+  const downloadNoFAPNG = async () => {
+    setIsDownloading(true);
+    toaster.create({
+      description: "Creating PNG file ...",
+      duration: 3000,
+      type: "info",
+    });
+
+    const file = await createNoFAPNG();
+
+    if (file) {
+      toaster.create({
+        description: "PNG file successfully created! Downloading ...",
+        duration: 3000,
+        type: "info",
+      });
+      const link = document.createElement("a");
+      link.download = file.name;
+      link.href = URL.createObjectURL(file);
+      link.click();
+      URL.revokeObjectURL(link.href);
+
+      toaster.create({
+        description: "Download success!",
+        duration: 3000,
+        type: "success",
+      });
+    } else {
+      toaster.create({
+        description: "PNG file creation unsuccessful. Try again later.",
+        duration: 3000,
+        type: "warning",
+      });
+    }
+
+    setIsDownloading(false);
   };
 
   return (
     <>
+      <Toaster />
       <Flex
         justifyContent="start"
         alignItems="left"
@@ -195,7 +294,33 @@ export default function YourParticularNoFA() {
         minH="100vh"
         px={4}
       >
-        <NoFAHeader onDownload={downloadAsPNG} isDownloading={isDownloading} />
+        <NoFAHeader
+          onDownload={downloadNoFAPNG}
+          isDownloading={isDownloading}
+        />
+
+        {!nofa?.ipfsURI && nofa?.creatorAuthId === user?.id? (
+          <Button
+            bgColor="#A9CEEB"
+            borderRadius={15}
+            w="full"
+            onClick={uploadToIPFS}
+            disabled={isCreatingNFT}
+            mb={4}
+            alignSelf={"center"}
+          >
+            {isCreatingNFT ? (
+              <Spinner size="sm" />
+            ) : (
+              <>
+                <Text color="#0F1C33" fontSize="14px" fontWeight="medium">
+                  Create an NFT with Nyla
+                </Text>
+                <LoveIcon />
+              </>
+            )}
+          </Button>
+        ) : null}
 
         <Flex
           bgColor="#E2E8F0"
