@@ -12,6 +12,13 @@ export const getColorBySentiment = (sentiment: string | null) => {
   }
 };
 
+export const getColorForHeadline = (headline: Headline | null) => {
+  if (!headline) {
+    return getColorBySentiment("neutral");
+  }
+  return getColorBySentiment(headline.sentiment);
+};
+
 export const getColorForNoFA = (headlines: Headline[] | null | undefined) => {
   if (!headlines || headlines.length === 0) {
     return getColorBySentiment("neutral");
