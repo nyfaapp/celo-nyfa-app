@@ -15,7 +15,8 @@ export interface NoFA {
   marketCap: number | null | undefined;
   totalSupply: number | null | undefined;
   circulatingSupply: number | null | undefined;
-  headlines: Headline[] | null | undefined; // Array of headline objects
+  headlines: Headline[] | null | undefined;
+  timeCreated: string | null | undefined;// Array of headline objects
 }
 
 

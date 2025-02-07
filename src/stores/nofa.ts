@@ -21,10 +21,10 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
   allNofas: [],
   isLoading: false,
   isLoadingAll: false,
-  setNoFAFromData: (data) =>
-    set((state) => ({
-      nofa: state.nofa ? { ...state.nofa, ...data } : (data as NoFA),
-    })),
+  setNoFAFromData: (data) => {
+    set({ nofa: null }); // Reset first
+    set((state) => ({ ...state, nofa: data as NoFA })); // Then set new data
+  },
   resetNoFA: () => set({ nofa: null }),
   fetchUserNoFAs: async (creatorAuthId: string) => {
     set({ isLoading: true });
@@ -42,7 +42,8 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
           marketCap,
           totalSupply,
           circulatingSupply,
-          headlines
+          headlines,
+          timeCreated
         `
         )
         .eq("creatorAuthId", creatorAuthId);
@@ -74,7 +75,8 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
           marketCap,
           totalSupply,
           circulatingSupply,
-          headlines
+          headlines,
+          timeCreated
         `
         )
         .neq("creatorAuthId", creatorAuthId);
