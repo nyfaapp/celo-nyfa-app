@@ -9,6 +9,7 @@ import HeadlineSection from "@/components/nyfa/components/headline-section";
 import NoFAHeader from "@/components/nyfa/components/nofa-header";
 import TokenomicsSection from "@/components/nyfa/components/tokenomics-section";
 import { LoveIcon } from "@/components/nyfa/svg-icons/love-icon";
+import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useCreatorStore } from "@/stores/creator";
 import { useNoFAStore } from "@/stores/nofa";
@@ -21,15 +22,15 @@ export default function YourParticularNoFA() {
   const { nofa } = useNoFAStore();
   const flexRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [isCreatingNFT, setIsCreatingNFT] = useState(false);
+  const [isUploadingToIPFS, setIsUploadingToIPFS] = useState(false);
   const setNoFAFromData = useNoFAStore((state) => state.setNoFAFromData);
 
   const { user, supabase } = useSupabase();
 
   const creator = useCreatorStore((state) => state.creator);
 
-  const uploadToIPFS = async () => {
-    setIsCreatingNFT(true);
+  const uploadToIPFS = async (): Promise<void> => {
+    setIsUploadingToIPFS(true);
 
     const file = await createNoFAPNG();
 
@@ -87,7 +88,7 @@ export default function YourParticularNoFA() {
     } catch (error) {
       console.error("Error uploading to IPFS image:", error);
     } finally {
-      setIsCreatingNFT(false);
+      setIsUploadingToIPFS(false);
     }
   };
 
@@ -305,11 +306,11 @@ export default function YourParticularNoFA() {
             borderRadius={15}
             w="full"
             onClick={uploadToIPFS}
-            disabled={isCreatingNFT}
+            disabled={isUploadingToIPFS}
             mb={3}
             alignSelf={"center"}
           >
-            {isCreatingNFT ? (
+            {isUploadingToIPFS ? (
               <Spinner size="sm" />
             ) : (
               <>
@@ -322,7 +323,30 @@ export default function YourParticularNoFA() {
           </Button>
         ) : null}
 
-        {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+        {nofa?.txnHash ? (
+          <Button
+            bgColor="#A9CEEB"
+            borderRadius={15}
+            w="full"
+            onClick={() =>
+              window.open(
+                `https://base-sepolia.blockscout.com/tx/${nofa?.txnHash}`,
+                "_blank"
+              )
+            }
+            mb={3}
+            alignSelf={"center"}
+          >
+            <>
+              <Text color="#0F1C33" fontSize="14px" fontWeight="medium">
+                This NoFA is already minted as an
+              </Text>
+              <NFTIcon />
+            </>
+          </Button>
+        ) : null}
+
+        {!nofa?.txnHash && nofa?.creatorAuthId === user?.id ? (
           <AgentStreamComponent
             privyWalletId={creator?.privyWalletId!}
             ipfsURI={nofa?.ipfsURI!}
@@ -330,7 +354,6 @@ export default function YourParticularNoFA() {
             nofaId={nofa?.id!}
           />
         ) : null}
-
 
         <Flex
           bgColor="#E2E8F0"
