@@ -1,7 +1,7 @@
 # Nyfa App - Powered by Privy Server Wallets and Coinbase's AgentKit
 
 
-👧🏾 Nyfa - Not Your Financial Advisor
+👧🏾 Nyfa - Not Your Financial Advisor (Human Name: Nyla)
 
 🖼️ NoFA - Not Financial Advice
 
