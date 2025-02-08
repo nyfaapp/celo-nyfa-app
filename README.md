@@ -32,6 +32,7 @@ Nyfa App is a decentralized application that streamlines crypto research and ver
 
 The platform emphasizes simplicity: users focus on research while our automated systems handle all blockchain interactions behind the scenes.
 
+
 ## Features
 
 - NoFA Token Minting
@@ -40,11 +41,11 @@ The platform emphasizes simplicity: users focus on research while our automated 
 - Privy Server Wallets
 - Base Network Support (Base Sepolia for testing)
 - News Sentiment Analysis
-- Responsive UI with Tailwind CSS
+
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15.1.6
+- **Frontend**: Next.js 15.1.6 (Chakra UI, Hero UI)
 - **Styling**: Tailwind CSS
 - **Authentication**: Privy
 - **Database**: Supabase
@@ -55,12 +56,14 @@ The platform emphasizes simplicity: users focus on research while our automated 
   - AgentKit (with Privy server wallet integration)
 - **Smart Contracts**: Solidity (OpenZeppelin)
 
+
 ## Prerequisites
 
 - Node.js (Latest LTS version)
 - npm or yarn
 - Web3 wallet (Coinbase Wallet recommended)
 - Environment variables setup
+
 
 ## Installation
 
@@ -115,6 +118,7 @@ yarn dev
 - AgentKit by Coinbase: https://docs.cdp.coinbase.com/agentkit/docs/welcome
 - OnchainKit: https://portal.cdp.coinbase.com/products/onchainkit
 - Privy Server Wallets: https://docs.privy.io/guide/server-wallets/
+
 
 ## Integration Example
 
