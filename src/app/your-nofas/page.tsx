@@ -1,6 +1,7 @@
 "use client";
 
 import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
+import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
@@ -91,6 +92,8 @@ export default function YourNoFas() {
                   borderRadius={"15px"}
                   w={"full"}
                   key={index}
+                  flexDir={"column"}
+                  alignContent={"center"}
                   onClick={async () => {
                     setNoFAFromData(nofa);
                     // Give a tiny delay to ensure state is updated
@@ -98,9 +101,12 @@ export default function YourNoFas() {
                     router.push(`/your-nofas/${nofa.id}`);
                   }}
                 >
-                  <Text color="#0F1C33" m={4} textAlign={"center"}>
-                    {nofa.id}
-                  </Text>
+                  <>
+                    {nofa.txnHash ? <NFTIcon /> : null}
+                    <Text color="#0F1C33" m={4} textAlign={"center"}>
+                      {nofa.id?.substring(0, 8)}
+                    </Text>
+                  </>
                 </Box>
               ))}
             </SimpleGrid>

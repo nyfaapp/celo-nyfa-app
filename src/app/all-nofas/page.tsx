@@ -1,5 +1,6 @@
 "use client";
 
+import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
@@ -30,9 +31,9 @@ export default function AllNoFAs() {
         justifyContent={"start"}
         alignItems={"center"}
         flexDirection={"column"}
-        h={"100vh"}
-        pb="60px"
-        position="relative"
+        h={"100vh"} // Change to full viewport height
+        pb="60px" // Add padding bottom to account for absolute box
+        position="relative" // Add this to establish positioning context
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
           <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
@@ -70,7 +71,6 @@ export default function AllNoFAs() {
             style={{ backgroundColor: "#0F1C33" }}
           />
         </Box>
-
         <Box flex={1} overflowY="auto" w="full" mb={4}>
           {isLoadingAll ? (
             <Flex justifyContent="center" alignItems="center" h="full">
@@ -78,7 +78,7 @@ export default function AllNoFAs() {
             </Flex>
           ) : allNofas.length === 0 ? (
             <Text color="#0F1C33" fontSize="18px" textAlign="center" mt={8}>
-              no one has not created any NoFAs ... yet
+              you have not created any NoFAs ... yet
             </Text>
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
@@ -92,16 +92,21 @@ export default function AllNoFAs() {
                   borderRadius={"15px"}
                   w={"full"}
                   key={index}
+                  flexDir={"column"}
+                  alignContent={"center"}
                   onClick={async () => {
                     setNoFAFromData(nofa);
                     // Give a tiny delay to ensure state is updated
                     await new Promise((resolve) => setTimeout(resolve, 0));
-                    router.push(`/your-nofas/${nofa.id}`);
+                    router.push(`/all-nofas/${nofa.id}`);
                   }}
                 >
-                  <Text color="#0F1C33" m={4} textAlign={"center"}>
-                    {nofa.id}
-                  </Text>
+                  <>
+                    {nofa.txnHash ? <NFTIcon /> : null}
+                    <Text color="#0F1C33" m={4} textAlign={"center"}>
+                      {nofa.id?.substring(0, 8)}
+                    </Text>
+                  </>
                 </Box>
               ))}
             </SimpleGrid>
@@ -111,12 +116,12 @@ export default function AllNoFAs() {
 
       <Box
         bg="#0F1C33"
-        position="fixed"
+        position="fixed" // Change to fixed
         bottom="0"
-        left="0"
+        left="0" // Add this
         right="0"
         py={4}
-        zIndex={2}
+        zIndex={2} // Ensure it stays on top
       >
         <Text
           color={"white"}
