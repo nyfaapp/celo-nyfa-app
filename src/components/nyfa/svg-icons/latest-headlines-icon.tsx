@@ -1,7 +1,6 @@
-import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const LatestHeadlinesIcon: React.FC<IconSvgProps> = ({}) => {
+export const LatestHeadlinesIcon: React.FC = ({}) => {
   return (
     <svg
       width="24"
