@@ -25,7 +25,7 @@ const createMasterPrompt = ({
    - Verify new balance
    - CONTINUE to step 3
 
-3. Use erc721uristorage action to mint NFT:
+3. Use erc721_uristorage action to mint NFT:
    * contractAddress: ${NoFANFTAddress}
    * to: ${userWalletAddress}
    * uri: ${ipfsURI}
