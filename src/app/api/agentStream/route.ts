@@ -8,7 +8,10 @@ interface StreamRequest {
   userWalletAddress: string;
 }
 
-const createMasterPrompt = ({ userWalletAddress, ipfsURI }: Partial<StreamRequest>) => `Execute these steps in order without asking questions:
+const createMasterPrompt = ({
+  userWalletAddress,
+  ipfsURI,
+}: Partial<StreamRequest>) => `Execute these steps in order without asking questions:
 
 1. Check wallet balance on Base Sepolia for ${userWalletAddress}.
    - If balance >= 0.001 ETH, proceed to step 3
@@ -17,8 +20,9 @@ const createMasterPrompt = ({ userWalletAddress, ipfsURI }: Partial<StreamReques
 2. If balance is insufficient:
    - Request Base Sepolia ETH from faucet
    - Keep retrying if faucet request fails until successful
-   - Return ONLY the faucet transaction hash once successful
-   - Stop faucet requests after first success
+   - After receiving faucet funds, return the transaction hash
+   - Wait for transaction confirmation
+   - Check balance again, then IMMEDIATELY proceed to step 3
 
 3. Use the erc721uristorage action to mint the NFT with:
    * contractAddress: ${NoFANFTAddress}
@@ -26,20 +30,26 @@ const createMasterPrompt = ({ userWalletAddress, ipfsURI }: Partial<StreamReques
    * uri: ${ipfsURI}
    - Return ONLY the mint transaction hash
 
+Important: After successfully receiving faucet funds in step 2, you MUST proceed to step 3. Do not stop after the faucet transaction.
 Return transaction hashes without any additional text.`;
 
-const streamMessage = (type: "agent" | "tools", content: string, txnHash?: string | null) => 
-  JSON.stringify({ type, content, txnHash }) + "\n";
+const streamMessage = (
+  type: "agent" | "tools",
+  content: string,
+  txnHash?: string | null
+) => JSON.stringify({ type, content, txnHash }) + "\n";
 
 export async function POST(req: Request) {
   try {
-    const { privyWalletId, ipfsURI, userWalletAddress } = (await req.json()) as StreamRequest;
+    const { privyWalletId, ipfsURI, userWalletAddress } =
+      (await req.json()) as StreamRequest;
 
     // Validate required parameters
     if (!privyWalletId || !ipfsURI || !userWalletAddress) {
       return new Response(
         JSON.stringify({
-          error: "Missing required parameters: privyWalletId, ipfsURI, and userWalletAddress are required",
+          error:
+            "Missing required parameters: privyWalletId, ipfsURI, and userWalletAddress are required",
         }),
         {
           status: 400,
@@ -75,11 +85,11 @@ export async function POST(req: Request) {
           if ("agent" in chunk) {
             const content = chunk.agent.messages[0].content;
             const match = content.match(/0x[a-fA-F0-9]{64}/);
-            
+
             // Format message based on content
             let messageContent = content;
             if (match) {
-              messageContent = content.includes("mint") 
+              messageContent = content.includes("mint")
                 ? `NFT Minted successfully. Transaction hash: ${match[0]}`
                 : `Received funds from faucet. Transaction hash: ${match[0]}`;
             }
@@ -106,14 +116,11 @@ export async function POST(req: Request) {
         );
       } catch (error) {
         console.error("Stream error:", error);
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : "Unknown error occurred";
-          
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error occurred";
+
         await writer.write(
-          encoder.encode(
-            streamMessage("agent", `Error: ${errorMessage}`)
-          )
+          encoder.encode(streamMessage("agent", `Error: ${errorMessage}`))
         );
       } finally {
         await writer.close();
