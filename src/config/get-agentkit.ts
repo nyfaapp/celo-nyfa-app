@@ -1,9 +1,6 @@
-// lib/privy-agentkit.ts
-import { PrivyClient } from "@privy-io/server-auth";
 import { createViemAccount } from "@privy-io/server-auth/viem";
 import {
   Address,
-  LocalAccount,
   createWalletClient,
   encodeFunctionData,
   http,
@@ -22,6 +19,7 @@ import {
 import { privy } from "./privy";
 import { z } from "zod";
 
+// Action providers
 const erc721 = erc721ActionProvider();
 const cdp = cdpApiActionProvider({
   apiKeyName: process.env.CDP_API_KEY_NAME!,
@@ -36,7 +34,7 @@ const mintParamsSchema = z.object({
 });
 
 const erc721uristorage = customActionProvider<EvmWalletProvider>({
-  name: "erc721uristorage",
+  name: "erc721_uristorage",
   description: "Mint ERC721URIStorage NFTs",
   schema: mintParamsSchema,
   invoke: async (walletProvider, args) => {
@@ -69,6 +67,19 @@ const erc721uristorage = customActionProvider<EvmWalletProvider>({
   },
 });
 
+/**
+ * Retrieves an AgentKit instance using the provided Privy wallet ID.
+ *
+ * @param privyWalletId - The ID of the Privy wallet to retrieve.
+ * @returns A promise that resolves to an AgentKit instance.
+ *
+ * @throws Will throw an error if the wallet retrieval or AgentKit initialization fails.
+ *
+ * @example
+ * ```typescript
+ * const agentKit = await getAgentKitFromPrivy('your-privy-wallet-id');
+ * ```
+ */
 export async function getAgentKitFromPrivy(
   privyWalletId: string
 ): Promise<any> {
@@ -86,7 +97,9 @@ export async function getAgentKitFromPrivy(
   const client = createWalletClient({
     account,
     chain: baseSepolia,
-    transport: http(),
+    transport: http(
+      `https://lb.drpc.org/ogrpc?network=base-sepolia&dkey=${process.env.DRPC_API_KEY}`
+    ),
   });
 
   // Create wallet provider
