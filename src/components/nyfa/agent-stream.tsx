@@ -32,13 +32,15 @@ export default function AgentStreamComponent({
   privyWalletId,
   ipfsURI,
   userWalletAddress,
-  nofaId
+  nofaId,
 }: AgentStreamProps) {
   const [messages, setMessages] = useState<StreamMessage[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentStep, setCurrentStep] = useState<"idle" | "checking" | "funding" | "minting">("idle");
+  const [currentStep, setCurrentStep] = useState<
+    "idle" | "checking" | "funding" | "minting"
+  >("idle");
 
   const agentBgColor = "#0F1C33";
   const toolsBgColor = "#0F1C33";
@@ -55,16 +57,16 @@ export default function AgentStreamComponent({
         .eq("id", nofaId)
         .select()
         .single();
-  
+
       if (error) {
         console.error("Error updating NoFA:", error);
         throw error;
       }
-  
+
       if (!data) {
         throw new Error("No data returned from update");
       }
-  
+
       // Parse the returned data to match the NoFA interface
       const parsedNoFA: NoFA = {
         id: data.id,
@@ -86,14 +88,15 @@ export default function AgentStreamComponent({
             }))
           : null,
       };
-  
+
       setNoFAFromData(parsedNoFA);
+      
     } catch (err) {
       console.error("Error updating NoFA:", err);
     }
   };
 
-  const processChunk = (chunk: string) => {
+  const processChunk = async (chunk: string) => {
     const lines = chunk.split("\n");
 
     for (const line of lines) {
@@ -102,27 +105,39 @@ export default function AgentStreamComponent({
       try {
         const message = JSON.parse(line);
         if (message.content?.trim()) {
+          // First add message to chat
+          setMessages((prev) => [...prev, message]);
+
           // Detect steps based on message content
           if (message.content.includes("balance")) {
             setCurrentStep("checking");
           } else if (message.content.includes("faucet")) {
             setCurrentStep("funding");
-            const match = message.content.match(/0x[a-fA-F0-9]{64}/);
-            if (match) {
-              const hash = match[0];
-              setTransactions(prev => [...prev, { type: "faucet", hash }]);
+            // Only extract faucet hash if the message indicates success
+            if (
+              message.content.includes("success") ||
+              message.content.includes("received")
+            ) {
+              const match = message.content.match(/0x[a-fA-F0-9]{64}/);
+              if (match) {
+                const hash = match[0];
+                setTransactions((prev) => [...prev, { type: "faucet", hash }]);
+              }
             }
-          } else if (message.content.includes("mint") && message.content.includes("0x")) {
+          } else if (message.content.includes("mint")) {
             setCurrentStep("minting");
-            const match = message.content.match(/0x[a-fA-F0-9]{64}/);
-            if (match) {
-              const hash = match[0];
-              setTransactions(prev => [...prev, { type: "mint", hash }]);
-              updateNofaInSupabase(hash);
+            // Only extract and update if it's a successful mint
+            if (message.content.includes("success") || message.txnHash) {
+              const hash =
+                message.txnHash ||
+                message.content.match(/0x[a-fA-F0-9]{64}/)?.[0];
+              if (hash) {
+                setTransactions((prev) => [...prev, { type: "mint", hash }]);
+                // Make sure we only update Supabase with a valid mint hash
+                await updateNofaInSupabase(hash);
+              }
             }
           }
-
-          setMessages((prev) => [...prev, message]);
         }
       } catch (e) {
         console.error("Error parsing message:", e);
@@ -151,7 +166,7 @@ export default function AgentStreamComponent({
         body: JSON.stringify({
           privyWalletId,
           ipfsURI,
-          userWalletAddress
+          userWalletAddress,
         }),
       });
 
@@ -285,7 +300,8 @@ export default function AgentStreamComponent({
               mb={2}
             >
               <Text fontWeight="semibold" color="white">
-                {tx.type === "faucet" ? "Faucet Funding" : "NFT Minting"} Transaction:
+                {tx.type === "faucet" ? "Faucet Funding" : "NFT Minting"}{" "}
+                Transaction:
               </Text>
               <Text fontFamily="mono" wordBreak="break-all" color="white">
                 {tx.hash}
