@@ -22,7 +22,8 @@ export default function CreateYourNoFA() {
   const [coinTicker, setCoinTicker] = useState<string>("ETH");
 
   const [isCreatingNoFA, setIsCreatingNoFA] = useState(false);
-  const setNoFAData = useNoFAStore((state) => state.setNoFAFromData);
+
+  const { setNoFAFromData } = useNoFAStore();
 
   const createNoFAFn = async (coinId: string) => {
     setIsCreatingNoFA(true);
@@ -40,7 +41,7 @@ export default function CreateYourNoFA() {
       const headlines: Headline[] = cryptoNewsAPIData;
 
       // 3. Update store
-      setNoFAData({
+      setNoFAFromData({
         coinId: coinGeckoData.coinId,
         creatorAuthId: user?.id,
         coinImageURI: coinGeckoData.coinImageURI,
@@ -61,11 +62,14 @@ export default function CreateYourNoFA() {
         headlines,
       });
 
+      setNoFAFromData(createdNoFA);
+
       toaster.create({
         description: "NoFA successfully created.",
         duration: 3000,
         type: "success",
       });
+
       router.push(`/your-nofas/${createdNoFA.id}`);
     } catch (error) {
       toaster.create({
@@ -84,7 +88,7 @@ export default function CreateYourNoFA() {
       coinId,
       creatorAuthId,
       txnHash = null,
-      ipfsURI: URI = null,
+      ipfsURI = null,
       coinImageURI = null,
       marketCap = null,
       totalSupply = null,
@@ -98,7 +102,7 @@ export default function CreateYourNoFA() {
         coinId,
         creatorAuthId,
         txnHash,
-        URI,
+        ipfsURI,
         coinImageURI,
         marketCap,
         totalSupply,
