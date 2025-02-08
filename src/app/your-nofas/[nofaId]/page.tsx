@@ -352,6 +352,7 @@ export default function YourParticularNoFA() {
             ipfsURI={nofa?.ipfsURI!}
             userWalletAddress={creator?.userWalletAddress!}
             nofaId={nofa?.id!}
+            nofaTxnHash={nofa.txnHash!}
           />
         ) : null}
 
