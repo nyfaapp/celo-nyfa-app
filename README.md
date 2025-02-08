@@ -61,7 +61,7 @@ The platform emphasizes simplicity: users focus on research while our automated 
 
 - Node.js (Latest LTS version)
 - npm or yarn
-- Web3 wallet (Coinbase Wallet recommended)
+- Web3 wallet (Coinbase Wallet recommended, Metamask, or any EIP-1193 provider)
 - Environment variables setup
 
 
