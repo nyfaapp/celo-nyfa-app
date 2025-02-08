@@ -1,37 +1,35 @@
-# Nyfa App - Powered by Privy Server Wallets and Coinbase's AgentKit
+# Nyfa App - AI-Powered Crypto Research Platform
+> Powered by Privy Server Wallets and Coinbase's AgentKit
 
-
-👧🏾 Nyfa - Not Your Financial Advisor (Human Name: Nyla)
-
-🖼️ NoFA - Not Financial Advice
+👧🏾 **Nyfa** - Not Your Financial Advisor (Human Name: Nyla)  
+🖼️ **NoFA** - Not Financial Advice
 
 ![nyfa](https://github.com/user-attachments/assets/3e14c649-5050-4a62-8f45-54bce4fc2af4)
 
-A Next.js-based AI-Agent-Driven Web3 application for:
-1. Creating PNG files from NoFA templates that give information about a crypto asset (market cap, news sentiment, etc).
-2. Minting these PNG files as NFTs on the Base network via an AI Agent.
+## What is Nyfa?
+A Next.js-based Web3 application that leverages AI agents to:
+- Generate detailed PNG reports about crypto assets (including market cap, news sentiment, etc.)
+- Automatically mint these reports as NFTs on the Base network
 
-## Overview
+## How It Works
 
-Nyfa App is a decentralized application that streamlines crypto research and verification through innovative "NoFA" (Not Financial Advice) tokens. Here's how it works:
+### 1. Research Generation
+Users select a crypto asset to receive an auto-generated PNG containing:
+- Market capitalization
+- Price trends
+- News sentiment analysis
 
-1. **Research Generation**: Users select a crypto asset and receive an automatically generated PNG file containing key metrics:
-   - Market capitalization
-   - Price trends
-   - News sentiment analysis
+### 2. Automated NFT Minting
+The PNG becomes a "NoFA NFT" on Base network through:
+- AgentKit integration (Coinbase Developer Platform)
+- Privy server wallets for gasless transactions
+- Zero blockchain interaction required from users
 
-2. **Automated NFT Minting**: The PNG is automatically minted as a "NoFA NFT" on the Base network through:
-   - AgentKit integration (Coinbase Developer Platform)
-   - Privy server wallets for gasless transactions
-   - Zero blockchain interaction required from users
-
-3. **Proof of Research**: These NoFA NFTs serve as:
-   - Verifiable proof of due diligence
-   - Shareable research artifacts
-   - Historical record of analysis
-
-The platform emphasizes simplicity: users focus on research while our automated systems handle all blockchain interactions behind the scenes.
-
+### 3. Proof of Research
+NoFA NFTs serve as:
+- Verifiable proof of due diligence
+- Shareable research artifacts
+- Historical record of analysis
 
 ## Features
 
@@ -57,37 +55,26 @@ The platform emphasizes simplicity: users focus on research while our automated 
 - **Smart Contracts**: Solidity (OpenZeppelin)
 
 
-## Prerequisites
+## Getting Started
 
+### Prerequisites
 - Node.js (Latest LTS version)
 - npm or yarn
 - Web3 wallet (Coinbase Wallet recommended, Metamask, or any EIP-1193 provider)
-- Environment variables setup
 
-
-## Installation
-
-1. Clone the repository:
-
+### Quick Start
+1. Clone and install:
 ```bash
 git clone https://github.com/andrewkimjoseph/nyfa-app.git
 cd nyfa-app
+npm install  # or yarn install
 ```
 
-2. Install dependencies:
-
-```bash
-npm install
-# or
-yarn install
-```
-
-3. Set up environment variables:
-   Create a `.env` file in the root directory with the following variables:
-
+2. Configure environment:
+Create `.env` file with the following:
 ```env
 NEXT_PUBLIC_ONCHAINKIT_API_KEY=""
-NEXT_PUBLIC_CDP_PROJECT_ID= ""
+NEXT_PUBLIC_CDP_PROJECT_ID=""
 NEXT_PUBLIC_SUPABASE_URL=""
 NEXT_PUBLIC_SUPABASE_ANON_KEY=""
 PRIVY_APP_ID=""
@@ -106,19 +93,21 @@ CDP_API_KEY_PRIVATE_KEY=""
 DRPC_API_KEY=""
 ```
 
-4. Run the development server:
-
+3. Launch development server:
 ```bash
-npm run dev
-# or
-yarn dev
+npm run dev  # or yarn dev
 ```
 
-5. Technologies used:
-- AgentKit by Coinbase: https://docs.cdp.coinbase.com/agentkit/docs/welcome
-- OnchainKit: https://portal.cdp.coinbase.com/products/onchainkit
-- Privy Server Wallets: https://docs.privy.io/guide/server-wallets/
-
+## Powered By
+- [AgentKit](https://docs.cdp.coinbase.com/agentkit/docs/welcome) - Coinbase's AI agent framework
+- [OnchainKit](https://portal.cdp.coinbase.com/products/onchainkit) - Web3 development toolkit
+- [Privy Server Wallets](https://docs.privy.io/guide/server-wallets/) - Secure wallet management
+- [Supabase](https://supabase.com/) - Database
+- [Qwen](https://bailian.console.alibabacloud.com/) - AI model
+- [CoinGecko](https://www.coingecko.com/) - Crypto data
+- [CryptoNews](https://cryptonews-api.com/) - News aggregation
+- [Pinata](https://www.pinata.cloud/) - IPFS storage
+- [Drpc](https://drpc.org/) - RPC provider
 
 ## Integration Example
 
