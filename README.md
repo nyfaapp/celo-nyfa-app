@@ -1,5 +1,7 @@
 # Nyfa App
 
+![nyfa](https://github.com/user-attachments/assets/3e14c649-5050-4a62-8f45-54bce4fc2af4)
+
 A Next.js-based Web3 application for:
 1. Creating PNG files from NoFA templates that give information about a crypto asset (market cap, news sentiment, etc).
 2. Minting these PNG files as NFTs on the Base network.
