@@ -346,7 +346,7 @@ export default function YourParticularNoFA() {
           </Button>
         ) : null}
 
-        {!nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+        {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
           <AgentStreamComponent
             privyWalletId={creator?.privyWalletId!}
             ipfsURI={nofa?.ipfsURI!}
