@@ -1,11 +1,10 @@
 "use client";
 
-import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
 import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
-import { Button, Text, Flex, Box, SimpleGrid } from "@chakra-ui/react";
+import { Button, Text, Flex, Box, SimpleGrid, Image } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { Spinner } from "@heroui/spinner";
 import { useRouter } from "next/navigation";
@@ -106,6 +105,14 @@ export default function YourNoFas() {
                     <Text color="#0F1C33" m={4} textAlign={"center"}>
                       {nofa.id?.substring(0, 8)}
                     </Text>
+                    <Image
+                      rounded="md"
+                      src={nofa.coinImageURI!}
+                      alt="Coin"
+                      width="30px"
+                      color="#0F1C33"
+                      fontSize="10px"
+                    />
                   </>
                 </Box>
               ))}
@@ -130,7 +137,8 @@ export default function YourNoFas() {
           mx={16}
           textAlign={"center"}
         >
-          *NoFAs are infographic NFTs generated using the click of a button by Nyla, our version of AI
+          *NoFAs are infographic NFTs generated using the click of a button by
+          Nyla, our version of AI
         </Text>
       </Box>
     </>
