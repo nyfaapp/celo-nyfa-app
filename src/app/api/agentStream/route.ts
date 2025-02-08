@@ -13,7 +13,7 @@ const createMasterPrompt = ({
   ipfsURI,
 }: Partial<StreamRequest>) => `Execute these steps in order without asking questions:
 
-1. Check wallet balance on Base Sepolia for ${userWalletAddress}.
+1. Check wallet balance on Base Sepolia for the address of this wallet provider.
    - If balance >= 0.001 ETH, proceed to step 3
    - If balance < 0.001 ETH, proceed to step 2
 
