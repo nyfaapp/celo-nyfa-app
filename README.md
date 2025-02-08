@@ -6,7 +6,24 @@ A Next.js-based Web3 application for:
 
 ## Overview
 
-Nyfa App is a decentralized application that allows users to mint and manage NoFA tokens. It integrates with various Web3 technologies and provides a seamless user experience for blockchain interactions.
+Nyfa App is a decentralized application that streamlines crypto research and verification through innovative "NoFA" (Not Financial Advice) tokens. Here's how it works:
+
+1. **Research Generation**: Users select a crypto asset and receive an automatically generated PNG file containing key metrics:
+   - Market capitalization
+   - Price trends
+   - News sentiment analysis
+
+2. **Automated NFT Minting**: The PNG is automatically minted as a "NoFA NFT" on the Base network through:
+   - AgentKit integration (Coinbase Developer Platform)
+   - Privy server wallets for gasless transactions
+   - Zero blockchain interaction required from users
+
+3. **Proof of Research**: These NoFA NFTs serve as:
+   - Verifiable proof of due diligence
+   - Shareable research artifacts
+   - Historical record of analysis
+
+The platform emphasizes simplicity: users focus on research while our automated systems handle all blockchain interactions behind the scenes.
 
 ## Features
 
