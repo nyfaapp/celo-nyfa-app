@@ -7,6 +7,7 @@ import { LoveIcon } from "./svg-icons/love-icon";
 import { useSupabase } from "@/providers/supabase-provider";
 import { NoFA } from "@/types/nofa";
 import { useNoFAStore } from "@/stores/nofa";
+import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 
 const MotionBox = motion(Box);
 
@@ -26,6 +27,7 @@ interface AgentStreamProps {
   ipfsURI: string;
   userWalletAddress: string;
   nofaId: string;
+  nofaTxnHash: string;
 }
 
 export default function AgentStreamComponent({
@@ -33,7 +35,12 @@ export default function AgentStreamComponent({
   ipfsURI,
   userWalletAddress,
   nofaId,
+  nofaTxnHash,
 }: AgentStreamProps) {
+  if (nofaTxnHash) {
+    return null;
+  }
+
   const [messages, setMessages] = useState<StreamMessage[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
@@ -90,7 +97,6 @@ export default function AgentStreamComponent({
       };
 
       setNoFAFromData(parsedNoFA);
-      
     } catch (err) {
       console.error("Error updating NoFA:", err);
     }
@@ -135,6 +141,11 @@ export default function AgentStreamComponent({
                 setTransactions((prev) => [...prev, { type: "mint", hash }]);
                 // Make sure we only update Supabase with a valid mint hash
                 await updateNofaInSupabase(hash);
+                toaster.create({
+                  description: "NFT minted successfully.",
+                  duration: 3000,
+                  type: "success",
+                });
               }
             }
           }
@@ -229,6 +240,7 @@ export default function AgentStreamComponent({
 
   return (
     <VStack align="stretch" w="full">
+      <Toaster />
       <Button
         bgColor="#A9CEEB"
         borderRadius={15}
