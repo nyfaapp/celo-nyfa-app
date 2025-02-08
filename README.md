@@ -148,9 +148,39 @@ async function getAgentKitFromPrivy(privyWalletId: string) {
 }
 ```
 
+The application includes a custom ERC721URIStorage action provider for minting NFTs:
+
+```typescript
+const erc721uristorage = customActionProvider<EvmWalletProvider>({
+  name: "erc721_uristorage",
+  description: "Mint ERC721URIStorage NFTs",
+  schema: mintParamsSchema,
+  invoke: async (walletProvider, args) => {
+    const { to, uri, contractAddress } = args;
+    
+    // Mint NFT with URI storage capability
+    const abi = parseAbi([
+      "function mint(address to, string memory uri) public returns (uint256)",
+    ]);
+    
+    const data = encodeFunctionData({
+      abi,
+      functionName: "mint",
+      args: [to, uri],
+    });
+
+    return await walletProvider.sendTransaction({
+      to: contractAddress,
+      data,
+      value: BigInt(0),
+    });
+  },
+});
+```
+
 This integration enables:
 - Secure server-side wallet management through Privy
 - Automated blockchain interactions via AgentKit's action providers
-- Custom NFT minting actions using ERC721 standards
+- Custom NFT minting with on-chain metadata storage using ERC721URIStorage
 - Gasless transactions for end users
 - Integration with Base Sepolia testnet
