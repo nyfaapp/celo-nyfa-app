@@ -8,8 +8,7 @@
 
 ## What is Nyfa?
 A Next.js-based Web3 application that leverages AI agents to:
-- Generate detailed PNG reports about crypto assets (including market cap, news sentiment, etc.)
-- Automatically mint these reports as NFTs on the Base network
+- Automatically mint PNG reports about crypto assets as NFTs on the Base network. The reports include market cap, news sentiment, and other information
 
 ## How It Works
 
