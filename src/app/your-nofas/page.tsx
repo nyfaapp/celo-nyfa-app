@@ -130,7 +130,7 @@ export default function YourNoFas() {
           mx={16}
           textAlign={"center"}
         >
-          *NoFAs are infographic NFTs generated using the click of a button.
+          *NoFAs are infographic NFTs generated using the click of a button by Nyla, our version of AI
         </Text>
       </Box>
     </>
