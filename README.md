@@ -53,6 +53,9 @@ NoFA NFTs serve as:
   - AgentKit (with Privy server wallet integration)
 - **Smart Contracts**: Solidity (OpenZeppelin)
 
+## Database Schema
+
+<img width="995" alt="Screenshot 2025-02-08 at 23 37 22" src="https://github.com/user-attachments/assets/1e686232-7b3b-4fa4-8094-6c96d46e3fe4" />
 
 ## Getting Started
 
@@ -192,7 +195,3 @@ This integration enables:
 - Custom NFT minting with on-chain metadata storage using ERC721URIStorage
 - Gasless transactions for end users
 - Integration with Base Sepolia testnet
-
-## Database Setup - Tables and Fields
-
-<img width="995" alt="Screenshot 2025-02-08 at 23 37 22" src="https://github.com/user-attachments/assets/1e686232-7b3b-4fa4-8094-6c96d46e3fe4" />
