@@ -1,4 +1,4 @@
-# Nyfa App
+# Nyfa App - Powered by Privy Server Wallets and Coinbase's AgentKit
 
 ![nyfa](https://github.com/user-attachments/assets/3e14c649-5050-4a62-8f45-54bce4fc2af4)
 
