@@ -26,8 +26,7 @@ export default function YourParticularNoFA() {
 
   const { user, supabase } = useSupabase();
 
-    const creator = useCreatorStore(state => state.creator)
-  
+  const creator = useCreatorStore((state) => state.creator);
 
   const uploadToIPFS = async () => {
     setIsCreatingNFT(true);
@@ -307,7 +306,7 @@ export default function YourParticularNoFA() {
             w="full"
             onClick={uploadToIPFS}
             disabled={isCreatingNFT}
-            mb={4}
+            mb={3}
             alignSelf={"center"}
           >
             {isCreatingNFT ? (
@@ -315,7 +314,7 @@ export default function YourParticularNoFA() {
             ) : (
               <>
                 <Text color="#0F1C33" fontSize="14px" fontWeight="medium">
-                  Create an NFT with Nyla
+                  Save your PNG, then create an NFT
                 </Text>
                 <LoveIcon />
               </>
@@ -323,9 +322,15 @@ export default function YourParticularNoFA() {
           </Button>
         ) : null}
 
-        <AgentStreamComponent
-          privyWalletId={creator?.privyWalletId!}
-        />
+        {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+          <AgentStreamComponent
+            privyWalletId={creator?.privyWalletId!}
+            ipfsURI={nofa?.ipfsURI!}
+            userWalletAddress={creator?.userWalletAddress!}
+            nofaId={nofa?.id!}
+          />
+        ) : null}
+
 
         <Flex
           bgColor="#E2E8F0"
