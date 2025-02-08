@@ -78,7 +78,7 @@ export default function AllNoFAs() {
             </Flex>
           ) : allNofas.length === 0 ? (
             <Text color="#0F1C33" fontSize="18px" textAlign="center" mt={8}>
-              you have not created any NoFAs ... yet
+              no one has not created any NoFAs ... yet
             </Text>
           ) : (
             <SimpleGrid columns={2} px={8} w="full" gap={6} py={4}>
