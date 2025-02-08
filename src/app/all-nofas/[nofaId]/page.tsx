@@ -1,322 +1,406 @@
 "use client";
 
-import ETHPriceComparison from "@/components/nyfa/coin-perspective/eth-price-comparison";
-import PriceWithChart from "@/components/nyfa/coin-perspective/price-with-chart";
-import { DownloadIcon } from "@/components/nyfa/svg-icons/download-icon";
-import { LatestHeadlinesIcon } from "@/components/nyfa/svg-icons/latest-headlines-icon";
+import { Toaster, toaster } from "@/components/chakra/ui/toaster";
+import AgentStreamComponent from "@/components/nyfa/agent-stream";
+import CoinInfo from "@/components/nyfa/components/coin-info";
+import CoinPerspectiveSection from "@/components/nyfa/components/coin-perspective";
+import Footer from "@/components/nyfa/components/footer";
+import HeadlineSection from "@/components/nyfa/components/headline-section";
+import NoFAHeader from "@/components/nyfa/components/nofa-header";
+import TokenomicsSection from "@/components/nyfa/components/tokenomics-section";
 import { LoveIcon } from "@/components/nyfa/svg-icons/love-icon";
-import { SmileyIcon } from "@/components/nyfa/svg-icons/smiley-icon";
-import { StarIcon } from "@/components/nyfa/svg-icons/star-icon";
-import { TokenomicsIcon } from "@/components/nyfa/svg-icons/tokenomics-icon";
+import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
+import { useSupabase } from "@/providers/supabase-provider";
+import { useCreatorStore } from "@/stores/creator";
 import { useNoFAStore } from "@/stores/nofa";
-import { getColorForHeadline, getColorForNoFA } from "@/utils/colorForNoFa";
-import { Button, Text, Flex, Box, Image } from "@chakra-ui/react";
-import { Divider } from "@heroui/divider";
+import { Text, Flex, Button } from "@chakra-ui/react";
+import { Spinner } from "@heroui/spinner";
+import html2canvas from "html2canvas";
+import { useRef, useState } from "react";
 
-// import html2canvas from "html2canvas";
-// import { useRef } from "react";
-
-export default function ParticularNoFA() {
+export default function YourParticularNoFA() {
   const { nofa } = useNoFAStore();
+  const flexRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isUploadingToIPFS, setIsUploadingToIPFS] = useState(false);
+  const setNoFAFromData = useNoFAStore((state) => state.setNoFAFromData);
 
-  //   const flexRef = useRef(null);
+  const { user, supabase } = useSupabase();
 
-  //   const downloadAsPNG = async () => {
-  //     if (flexRef.current) {
-  //       const standardWidth = 450; // Set standard width
-  //       const standardHeight = 900; // Set standard height
-  //       const scale = 2; // Fixed scale instead of device-dependent
+  const creator = useCreatorStore((state) => state.creator);
 
-  //       const canvas = await html2canvas(flexRef.current, {
-  //         scale: scale,
-  //         useCORS: true,
-  //         allowTaint: true,
-  //         logging: false,
-  //         backgroundColor: "#FFFFFF",
-  //         imageTimeout: 0,
-  //         width: standardWidth,
-  //         height: standardHeight,
-  //       });
+  const uploadToIPFS = async (): Promise<void> => {
+    setIsUploadingToIPFS(true);
 
-  //       const image = canvas.toDataURL("image/png", 1.0);
+    const file = await createNoFAPNG();
 
-  //       const finalCanvas = document.createElement("canvas");
-  //       const ctx = finalCanvas.getContext("2d");
-  //       // Set final canvas to our standard size
-  //       finalCanvas.width = standardWidth * scale;
-  //       finalCanvas.height = standardHeight * scale;
+    try {
+      const formData = new FormData();
 
-  //       if (ctx) {
-  //         ctx.fillStyle = "#FFFFFF";
-  //         ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-  //         ctx.imageSmoothingEnabled = true;
-  //         ctx.imageSmoothingQuality = "high";
-  //         ctx.drawImage(canvas, 0, 0);
-  //       }
+      if (file) {
+        formData.append("file", file);
+        formData.append(
+          "name",
+          `NoFA ${nofa?.id?.substring(0, 3)}-${nofa?.coinId?.substring(0, 3)}`
+        );
 
-  //       const finalImage = finalCanvas.toDataURL("image/png", 1.0);
+        const response = await fetch("/api/uploadToPinata", {
+          method: "POST",
+          body: formData,
+        });
 
-  //       const link = document.createElement("a");
-  //       const date = new Date();
-  //       link.download = `${date.getTime()}.png`;
-  //       link.href = finalImage;
-  //       link.click();
-  //     }
-  //   };
+        if (!response.ok) {
+          throw new Error("Failed to upload to Pinata");
+        }
+
+        const fromPinata = await response.json();
+
+        const ipfsHash: string = fromPinata.ipfsHash;
+
+        const { data, error } = await supabase
+          .from("NOFAS")
+          .update({ ipfsURI: `ipfs://${ipfsHash}` })
+          .eq("id", nofa?.id) // Assuming nofa.id is the identifier for the record
+          .single();
+
+        const updatedNofa = {
+          ...nofa,
+          ipfsURI: `ipfs://${ipfsHash}`,
+        };
+
+        setNoFAFromData(updatedNofa);
+
+        if (error) throw error;
+
+        toaster.create({
+          description: "Uploaded to IPFS and updated in database",
+          duration: 3000,
+          type: "success",
+        });
+      } else {
+        toaster.create({
+          description:
+            "No file exists. Download the NoFA first before you create an NFT.",
+          duration: 3000,
+          type: "info",
+        });
+      }
+    } catch (error) {
+      console.error("Error uploading to IPFS image:", error);
+    } finally {
+      setIsUploadingToIPFS(false);
+    }
+  };
+
+  const createNoFAPNG = async () => {
+    if (!flexRef.current) return null;
+
+    try {
+      // Initial delay for React rendering
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const element = flexRef.current;
+      const standardWidth = 450;
+
+      // Create container with specific styles
+      const container = document.createElement("div");
+      Object.assign(container.style, {
+        position: "fixed",
+        top: "0",
+        left: "0",
+        width: `${standardWidth}px`,
+        backgroundColor: "#FFFFFF",
+        margin: "0",
+        padding: "0",
+        opacity: "1",
+        zIndex: "-1000",
+      });
+      document.body.appendChild(container);
+
+      // Clone and prepare element
+      const clone = element.cloneNode(true) as HTMLElement;
+
+      // Handle all images in the clone
+      const images = clone.getElementsByTagName("img");
+      await Promise.all(
+        Array.from(images).map(async (img) => {
+          if (img.src.startsWith("http")) {
+            try {
+              const proxyUrl = `/api/proxyImages?url=${encodeURIComponent(
+                img.src
+              )}`;
+              const response = await fetch(proxyUrl);
+              const blob = await response.blob();
+
+              return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  img.src = reader.result as string;
+                  img.onload = resolve;
+                };
+                reader.readAsDataURL(blob);
+              });
+            } catch (error) {
+              console.error("Error processing image:", error);
+              return Promise.resolve();
+            }
+          }
+          return Promise.resolve();
+        })
+      );
+
+      // Handle iframes - replace with placeholders
+      const iframeContainers = clone.querySelectorAll('[bg="#0F1C33"]');
+      iframeContainers.forEach((container) => {
+        const placeholder = document.createElement("div");
+        placeholder.style.width = "100%";
+        placeholder.style.height = "305px"; // Match your iframe height
+        placeholder.style.backgroundColor = "#0F1C33";
+
+        // Remove the iframe and add placeholder
+        const iframe = container.querySelector("iframe");
+        if (iframe) {
+          iframe.remove();
+          container.appendChild(placeholder);
+        }
+      });
+
+      // Set clone styles
+      Object.assign(clone.style, {
+        width: `${standardWidth}px`,
+        height: "auto",
+        position: "static",
+        transform: "none",
+        margin: "0",
+        padding: "8px",
+        opacity: "1",
+        backgroundColor: "#E2E8F0",
+      });
+
+      container.appendChild(clone);
+
+      // Force layout calculation and wait a bit
+      container.offsetHeight;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Get actual height after all content is loaded
+      const actualHeight =
+        Math.max(
+          clone.getBoundingClientRect().height,
+          clone.scrollHeight,
+          clone.clientHeight,
+          container.scrollHeight
+        ) + 150;
+
+      // Set container height
+      container.style.height = `${actualHeight}px`;
+      container.style.minHeight = `${actualHeight}px`;
+
+      // Create canvas with specific options
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#FFFFFF",
+        width: standardWidth,
+        height: actualHeight,
+        windowWidth: standardWidth,
+        windowHeight: actualHeight,
+        logging: true,
+        onclone: (doc) => {
+          const images = doc.getElementsByTagName("img");
+          return Promise.all(
+            Array.from(images).map((img) => {
+              if (img.complete) return Promise.resolve();
+              return new Promise((resolve) => {
+                img.onload = resolve;
+                img.onerror = resolve;
+              });
+            })
+          );
+        },
+      });
+
+      // Clean up blob URLs
+      Array.from(images).forEach((img) => {
+        if (img.src.startsWith("blob:")) {
+          URL.revokeObjectURL(img.src);
+        }
+      });
+
+      // Remove container
+      document.body.removeChild(container);
+
+      // Convert to PNG and create File
+      const finalImage = canvas.toDataURL("image/png", 1.0);
+      const blob = await (await fetch(finalImage)).blob();
+
+      // Create and return File object
+      const filename = `${nofa?.id?.substring(0, 3)}-${nofa?.coinId?.substring(
+        0,
+        3
+      )}-${Date.now()}.png`;
+      return new File([blob], filename, { type: "image/png" });
+    } catch (error) {
+      console.error("Error generating image:", error);
+      return null;
+    }
+  };
+
+  const downloadNoFAPNG = async () => {
+    setIsDownloading(true);
+    toaster.create({
+      description: "Creating PNG file ...",
+      duration: 3000,
+      type: "info",
+    });
+
+    const file = await createNoFAPNG();
+
+    if (file) {
+      toaster.create({
+        description: "PNG file successfully created! Downloading ...",
+        duration: 3000,
+        type: "info",
+      });
+      const link = document.createElement("a");
+      link.download = file.name;
+      link.href = URL.createObjectURL(file);
+      link.click();
+      URL.revokeObjectURL(link.href);
+
+      toaster.create({
+        description: "Download success!",
+        duration: 3000,
+        type: "success",
+      });
+    } else {
+      toaster.create({
+        description: "PNG file creation unsuccessful. Try again later.",
+        duration: 3000,
+        type: "warning",
+      });
+    }
+
+    setIsDownloading(false);
+  };
 
   return (
     <>
+      <Toaster />
       <Flex
-        // ref={flexRef}
-        justifyContent={"start"}
-        alignItems={"left"}
-        flexDirection={"column"}
+        justifyContent="start"
+        alignItems="left"
+        flexDirection="column"
         minH="100vh"
         px={4}
       >
-        <Box w="full" textAlign="center" pt={4} position={"static"} mb={4}>
-          <Flex direction={"row"} justifyContent={"space-between"}>
-            <Text color={"#0F1C33"} fontSize={"22px"} fontWeight={"bold"}>
-              Your NoFA
-            </Text>
+        <NoFAHeader
+          onDownload={downloadNoFAPNG}
+          isDownloading={isDownloading}
+        />
 
-            <Button
-              bgColor={"#FDBB23"}
-              borderRadius={15}
-              w={"2/6"}
-              // onClick={() => router.push("/create-your-nofa")}
-            >
+        {!nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+          <Button
+            bgColor="#A9CEEB"
+            borderRadius={15}
+            w="full"
+            onClick={uploadToIPFS}
+            disabled={isUploadingToIPFS}
+            mb={3}
+            alignSelf={"center"}
+          >
+            {isUploadingToIPFS ? (
+              <Spinner size="sm" />
+            ) : (
               <>
-                <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"medium"}>
-                  Download
+                <Text color="#0F1C33" fontSize="14px" fontWeight="medium">
+                  Save your PNG, then create an NFT
                 </Text>
-                <DownloadIcon />
+                <LoveIcon />
               </>
-            </Button>
-          </Flex>
-        </Box>
+            )}
+          </Button>
+        ) : null}
 
-        {/* <Button bgColor={"#FDBB23"} borderRadius={15} mt={12} px={16} w={"3/6"}>
-          <Spinner size="sm"/>
-        </Button> */}
+        {nofa?.txnHash ? (
+          <Button
+            bgColor="#A9CEEB"
+            borderRadius={15}
+            w="full"
+            onClick={() =>
+              window.open(
+                `https://base-sepolia.blockscout.com/tx/${nofa?.txnHash}`,
+                "_blank"
+              )
+            }
+            mb={3}
+            alignSelf={"center"}
+          >
+            <>
+              <Text color="#0F1C33" fontSize="14px" fontWeight="medium">
+                This NoFA is already minted as an
+              </Text>
+              <NFTIcon />
+            </>
+          </Button>
+        ) : null}
+
+        {!nofa?.txnHash && nofa?.creatorAuthId === user?.id ? (
+          <AgentStreamComponent
+            privyWalletId={creator?.privyWalletId!}
+            ipfsURI={nofa?.ipfsURI!}
+            userWalletAddress={creator?.userWalletAddress!}
+            nofaId={nofa?.id!}
+          />
+        ) : null}
 
         <Flex
-          bgColor={"#E2E8F0"}
-          borderRadius={"10px"}
-          borderColor={"#0F1C33"}
-          borderWidth={"1px"}
-          direction={"column"}
+          bgColor="#E2E8F0"
+          borderColor="#0F1C33"
+          borderWidth="1px"
+          direction="column"
           p={2}
           mb={8}
+          ref={flexRef}
+          width="100%"
+          maxW="450px"
+          overflow="visible"
+          position="relative"
         >
-          <Flex direction={"row"} justifyContent={"space-between"}>
-            <Image
-              rounded="md"
-              src={nofa?.coinImageURI ?? undefined}
-              alt="Coin"
-              width={"50px"}
-              color={"#0F1C33"}
-              fontSize={"10px"}
-            />
-
-            <Text color={"#EA5D5D"} fontSize={"22px"} fontWeight={"bold"}>
-              {nofa?.id?.substring(0, 3) ?? null} {nofa?.coinId ?? null}
-            </Text>
-          </Flex>
-
-          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
-
-          <Flex direction={"row"} mt={2} p={2}>
-            <StarIcon />
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              Token price and chart
-            </Text>
-          </Flex>
-
-          <Box py={2}>
-            <PriceWithChart coinId={nofa?.coinId ?? null} />
-          </Box>
-
-          <Flex direction={"row"} mt={2} p={2}>
-            <SmileyIcon />
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              What if your crypto was like ETH?
-            </Text>
-          </Flex>
-
-          <Box py={2}>
-            <ETHPriceComparison vs={nofa?.coinId ?? null} />
-          </Box>
-
-          <Flex direction={"row"} p={2} justify={"end"}>
-            {/* <SmileyIcon /> */}
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"12px"}
-              fontWeight={"normal"}
-              ml={2}
-            >
-              via TheCoinPerspective
-            </Text>
-          </Flex>
-          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
-
-          <Flex direction={"row"} mt={2} p={2}>
-            <TokenomicsIcon />
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              Tokenomics
-            </Text>
-          </Flex>
-
-          <Flex direction={"row"} p={2} justify={"space-between"}>
-            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-              Market cap
-            </Text>
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              USD {nofa?.marketCap?.toLocaleString()}
-            </Text>
-          </Flex>
-          <Flex direction={"row"} mt={2} p={2} justify={"space-between"}>
-            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-              Total supply
-            </Text>
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              USD {nofa?.totalSupply?.toLocaleString()}
-            </Text>
-          </Flex>
-          <Flex direction={"row"} mt={2} p={2} justify={"space-between"}>
-            <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
-              Circulating supply
-            </Text>
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              {nofa?.circulatingSupply?.toLocaleString()}
-            </Text>
-          </Flex>
-          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
-
-          <Flex direction={"row"} mt={2} p={2}>
-            <LatestHeadlinesIcon />
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"16px"}
-              fontWeight={"bold"}
-              ml={2}
-            >
-              Latest Headlines
-            </Text>
-          </Flex>
-
-          {nofa?.headlines?.map((headline, index) => (
-            <Flex
-              key={index}
-              direction={"row"}
-              mt={2}
-              mb={1}
-              p={4}
-              bgColor={getColorForHeadline(headline)}
-              h={"150px"}
-              borderRadius={"10px"}
-              justify={"center"}
-            >
-              <Image
-                rounded="md"
-                src={headline.imageURL ?? undefined}
-                alt="Coin"
-                width={"100px"}
-                color={"#0F1C33"}
-                fontSize={"10px"}
-              />
-
-              <Text
-                color={"#0F1C33"}
-                fontSize={"16px"}
-                fontWeight={"normal"}
-                ml={2}
-                textAlign={"left"}
-                alignSelf={"center"}
-              >
-                {headline.title ?? ""}
-              </Text>
-            </Flex>
-          ))}
-
-          <Flex direction={"row"} p={2} justify={"end"}>
-            {/* <SmileyIcon /> */}
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"12px"}
-              fontWeight={"normal"}
-              ml={2}
-            >
-              via CryptonewsAPI
-            </Text>
-          </Flex>
-
-          <Divider className="" style={{ backgroundColor: "#0F1C33" }} />
-
-          <Flex direction={"row"} p={2} justify={"center"} mt={2}>
-            {/* <SmileyIcon /> */}
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"12px"}
-              fontWeight={"normal"}
-              mr={2}
-            >
-              Made with
-            </Text>
-            <LoveIcon />
-
-            <Text
-              color={"#0F1C33"}
-              fontSize={"12px"}
-              fontWeight={"normal"}
-              ml={2}
-            >
-              on the Nyfa App
-            </Text>
-          </Flex>
+          <CoinInfo
+            coinImageURI={nofa?.coinImageURI!}
+            id={nofa?.id!}
+            coinId={nofa?.coinId}
+          />
+          <CoinPerspectiveSection coinId={nofa?.coinId!} />
+          <TokenomicsSection
+            marketCap={nofa?.marketCap!}
+            totalSupply={nofa?.totalSupply!}
+            circulatingSupply={nofa?.circulatingSupply!}
+          />
+          <HeadlineSection headlines={nofa?.headlines!} />
+          <Footer timeCreated={nofa?.timeCreated!} />
         </Flex>
       </Flex>
+
+      {isDownloading && (
+        <Flex
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="rgba(0, 0, 0, 0.5)"
+          justifyContent="center"
+          alignItems="center"
+          zIndex={9999}
+        >
+          <Text color="white" fontSize="lg">
+            Downloading ...
+          </Text>
+        </Flex>
+      )}
     </>
   );
 }
