@@ -28,9 +28,9 @@ The platform emphasizes simplicity: users focus on research while our automated 
 ## Features
 
 - NoFA Token Minting
-- Web3 Wallet Integration (Coinbase Wallet)
+- Web3 Wallet Integration (Coinbase's OnchainKit)
 - Supabase Database Integration
-- Privy Authentication
+- Privy Server Wallets
 - Base Network Support (Base Sepolia for testing)
 - News Sentiment Analysis
 - Responsive UI with Tailwind CSS
@@ -45,6 +45,7 @@ The platform emphasizes simplicity: users focus on research while our automated 
   - Base Network (Sepolia Testnet)
   - Wagmi
   - OnchainKit
+  - AgentKit (with Privy server wallet integration)
 - **Smart Contracts**: Solidity (OpenZeppelin)
 
 ## Prerequisites
@@ -107,3 +108,48 @@ yarn dev
 - AgentKit by Coinbase: https://docs.cdp.coinbase.com/agentkit/docs/welcome
 - OnchainKit: https://portal.cdp.coinbase.com/products/onchainkit
 - Privy Server Wallets: https://docs.privy.io/guide/server-wallets/
+
+## Integration Example
+
+Here's how AgentKit and Privy server wallets are integrated in the application:
+
+```typescript
+// Initialize AgentKit with Privy server wallet
+import { createViemAccount } from "@privy-io/server-auth/viem";
+import { AgentKit, ViemWalletProvider } from "@coinbase/agentkit";
+import { createWalletClient, http } from "viem";
+import { baseSepolia } from "viem/chains";
+
+async function getAgentKitFromPrivy(privyWalletId: string) {
+  // Get the wallet from Privy
+  const privyWallet = await privy.walletApi.getWallet({ id: privyWalletId });
+
+  // Create Viem account using Privy's server wallet
+  const account = await createViemAccount({
+    walletId: privyWallet.id,
+    address: privyWallet.address,
+    privy,
+  });
+
+  // Create wallet client for Base Sepolia
+  const client = createWalletClient({
+    account,
+    chain: baseSepolia,
+    transport: http(`https://lb.drpc.org/ogrpc?network=base-sepolia&dkey=${process.env.DRPC_API_KEY}`),
+  });
+
+  // Create wallet provider and initialize AgentKit
+  const walletProvider = new ViemWalletProvider(client);
+  return await AgentKit.from({
+    walletProvider,
+    actionProviders: [wallet, cdp, erc721, erc721uristorage],
+  });
+}
+```
+
+This integration enables:
+- Secure server-side wallet management through Privy
+- Automated blockchain interactions via AgentKit's action providers
+- Custom NFT minting actions using ERC721 standards
+- Gasless transactions for end users
+- Integration with Base Sepolia testnet
