@@ -7,7 +7,6 @@ import { getColorForNoFA } from "@/utils/colorForNoFa";
 import { Button, Text, Flex, Box, SimpleGrid } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { Spinner } from "@heroui/spinner";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
