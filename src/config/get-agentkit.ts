@@ -95,6 +95,6 @@ export async function getAgentKitFromPrivy(
   // Initialize and return AgentKit
   return await AgentKit.from({
     walletProvider,
-    actionProviders: [wallet, cdp, erc721uristorage],
+    actionProviders: [wallet, cdp, erc721, erc721uristorage],
   });
 }
