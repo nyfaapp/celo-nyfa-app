@@ -1,7 +1,6 @@
-import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const BodyLogoNotConnected: React.FC<IconSvgProps> = ({}) => {
+export const BodyLogoNotConnected: React.FC = ({}) => {
   return (
     <svg
       width="127"

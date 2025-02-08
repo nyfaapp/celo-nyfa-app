@@ -1,7 +1,6 @@
-import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const TokenomicsIcon: React.FC<IconSvgProps> = ({}) => {
+export const TokenomicsIcon: React.FC = ({}) => {
   return (
     <svg
       width="24"

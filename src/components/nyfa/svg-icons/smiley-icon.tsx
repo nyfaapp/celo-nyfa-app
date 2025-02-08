@@ -1,7 +1,6 @@
-import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const SmileyIcon: React.FC<IconSvgProps> = ({}) => {
+export const SmileyIcon: React.FC = ({}) => {
   return (
     <svg
       width="20"

@@ -1,7 +1,6 @@
-import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const HeaderLogo: React.FC<IconSvgProps> = ({}) => {
+export const HeaderLogo: React.FC = ({}) => {
   return (
     <svg
       width="35"

@@ -1,7 +1,6 @@
-import { IconSvgProps } from "@/types/svgIcon";
 import * as React from "react";
 
-export const TopLeftIcon: React.FC<IconSvgProps> = ({}) => {
+export const TopLeftIcon: React.FC = ({}) => {
   return (
     <svg
       width="24"
