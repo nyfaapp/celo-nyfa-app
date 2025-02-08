@@ -37,7 +37,7 @@ export default function YourNoFas() {
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
           <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
-            Your NoFAs*, Created by You
+            Your NoFAs*
           </Text>
 
           <Flex direction={"row"} justify={"space-between"} px={4}>
@@ -49,7 +49,7 @@ export default function YourNoFas() {
               onClick={() => router.push("/all-nofas")}
             >
               <Text color={"white"} fontSize={"14px"} fontWeight={"normal"}>
-                View all
+                View all others
               </Text>
             </Button>
 
