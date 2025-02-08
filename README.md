@@ -115,6 +115,7 @@ Here's how AgentKit and Privy server wallets are integrated in the application:
 
 ```typescript
 // Initialize AgentKit with Privy server wallet
+// src/config/init-agent.ts
 import { createViemAccount } from "@privy-io/server-auth/viem";
 import { AgentKit, ViemWalletProvider } from "@coinbase/agentkit";
 import { createWalletClient, http } from "viem";
