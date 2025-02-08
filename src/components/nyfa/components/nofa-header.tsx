@@ -17,7 +17,7 @@ const NoFAHeader: React.FC<NoFAHeaderProps> = ({
     <Box w="full" textAlign="center" pt={4} position="static" mb={4}>
       <Flex direction="row" justifyContent="space-between">
         <Text color="#0F1C33" fontSize="22px" fontWeight="bold">
-          Your NoFA
+          NoFA
         </Text>
 
         <Button

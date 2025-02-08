@@ -6,6 +6,7 @@ import { ColorModeProvider } from "@/components/chakra/ui/color-mode";
 import SupabaseProvider from "@/providers/supabase-provider";
 import AuthRedirectProvider from "@/providers/auth-redirect-provider";
 import Header from "@/components/nyfa/header";
+import MobileOnlyProvider from "./mobile-only-provider";
 
 export default function MainProvider({
   children,
@@ -14,16 +15,16 @@ export default function MainProvider({
 }) {
   return (
     <Provider>
-      <Web3Provider>
-        <ColorModeProvider forcedTheme="dark">
-          <SupabaseProvider>
-            <Header />
-            <AuthRedirectProvider>
-              {children}
-            </AuthRedirectProvider>
-          </SupabaseProvider>
-        </ColorModeProvider>
-      </Web3Provider>
+      <MobileOnlyProvider>
+        <Web3Provider>
+          <ColorModeProvider forcedTheme="dark">
+            <SupabaseProvider>
+              <Header />
+              <AuthRedirectProvider>{children}</AuthRedirectProvider>
+            </SupabaseProvider>
+          </ColorModeProvider>
+        </Web3Provider>
+      </MobileOnlyProvider>
     </Provider>
   );
 }
