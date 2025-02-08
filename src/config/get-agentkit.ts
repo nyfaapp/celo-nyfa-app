@@ -14,6 +14,7 @@ import {
   AgentKit,
   cdpApiActionProvider,
   customActionProvider,
+  erc721ActionProvider,
   EvmWalletProvider,
   ViemWalletProvider,
   walletActionProvider,
@@ -21,6 +22,7 @@ import {
 import { privy } from "./privy";
 import { z } from "zod";
 
+const erc721 = erc721ActionProvider();
 const cdp = cdpApiActionProvider({
   apiKeyName: process.env.CDP_API_KEY_NAME!,
   apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY!,
