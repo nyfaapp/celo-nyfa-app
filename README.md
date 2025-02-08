@@ -9,7 +9,7 @@
 
 A Next.js-based AI-Agent-Driven Web3 application for:
 1. Creating PNG files from NoFA templates that give information about a crypto asset (market cap, news sentiment, etc).
-2. Minting these PNG files as NFTs on the Base network.
+2. Minting these PNG files as NFTs on the Base network via an AI Agent.
 
 ## Overview
 
