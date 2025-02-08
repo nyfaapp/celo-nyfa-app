@@ -153,29 +153,38 @@ async function getAgentKitFromPrivy(privyWalletId: string) {
 The application includes a custom ERC721URIStorage action provider for minting NFTs:
 
 ```typescript
+// src/config/get-agentkit.ts
 const erc721uristorage = customActionProvider<EvmWalletProvider>({
   name: "erc721_uristorage",
   description: "Mint ERC721URIStorage NFTs",
   schema: mintParamsSchema,
   invoke: async (walletProvider, args) => {
     const { to, uri, contractAddress } = args;
-    
-    // Mint NFT with URI storage capability
+
+    // Define the ABI for the mint function
     const abi = parseAbi([
       "function mint(address to, string memory uri) public returns (uint256)",
     ]);
-    
+
+    // Encode the function call
     const data = encodeFunctionData({
       abi,
       functionName: "mint",
       args: [to, uri],
     });
 
-    return await walletProvider.sendTransaction({
+    // Send the transaction
+    const hash = await walletProvider.sendTransaction({
       to: contractAddress,
       data,
       value: BigInt(0),
     });
+
+    return {
+      success: true,
+      hash,
+      message: `Successfully initiated mint transaction with hash: ${hash}`,
+    };
   },
 });
 ```
