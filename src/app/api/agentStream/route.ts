@@ -11,27 +11,28 @@ interface StreamRequest {
 const createMasterPrompt = ({
   userWalletAddress,
   ipfsURI,
-}: Partial<StreamRequest>) => `Execute these steps in order without asking questions:
+}: Partial<StreamRequest>) => `Execute these steps in sequence:
 
-1. Check wallet balance on Base Sepolia for the address of this wallet provider.
-   - If balance >= 0.001 ETH, proceed to step 3
-   - If balance < 0.001 ETH, proceed to step 2
+1. Check wallet balance on Base Sepolia for the current wallet provider.
+   - If balance >= 0.001 ETH, skip to step 3
+   - If balance < 0.001 ETH, execute step 2
 
-2. If balance is insufficient:
+2. Request faucet funds for wallet provider:
    - Request Base Sepolia ETH from faucet
-   - Keep retrying if faucet request fails until successful
-   - After receiving faucet funds, return the transaction hash
-   - Wait for transaction confirmation
-   - Check balance again, then IMMEDIATELY proceed to step 3
+   - Retry until successful
+   - After faucet success, return transaction hash
+   - Wait for confirmation
+   - Verify new balance
+   - CONTINUE to step 3
 
-3. Use the erc721uristorage action to mint the NFT with:
+3. Use erc721uristorage action to mint NFT:
    * contractAddress: ${NoFANFTAddress}
    * to: ${userWalletAddress}
    * uri: ${ipfsURI}
-   - Return ONLY the mint transaction hash
+   - Return mint transaction hash
 
-Important: After successfully receiving faucet funds in step 2, you MUST proceed to step 3. Do not stop after the faucet transaction.
-Return transaction hashes without any additional text.`;
+Critical: You MUST complete step 3 after successful faucet funding.
+Return only transaction hashes, no additional text.`;
 
 const streamMessage = (
   type: "agent" | "tools",
