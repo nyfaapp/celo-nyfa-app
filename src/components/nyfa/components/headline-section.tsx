@@ -33,6 +33,12 @@ const HeadlinesSection: React.FC<HeadlinesSectionProps> = ({ headlines }) => {
           h="150px"
           borderRadius="10px"
           justify="center"
+          onClick={()=>{
+            window.open(
+              headline.link!,
+              "_blank"
+            )
+          }}
         >
           <Image
             rounded="md"
