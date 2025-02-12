@@ -27,7 +27,7 @@ export default function ParticularNoFA() {
 
   const { user, supabase } = useSupabase();
 
-  // const creator = useCreatorStore((state) => state.creator);
+  const creator = useCreatorStore((state) => state.creator);
 
   const uploadNoFAToSupabase = async (
     file: File | null
@@ -429,14 +429,15 @@ export default function ParticularNoFA() {
           </Button>
         ) : null}
 
-        {/* {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+        {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
           <AgentStreamComponent
             privyWalletId={creator?.privyWalletId!}
             ipfsURI={nofa?.ipfsURI!}
             userWalletAddress={creator?.userWalletAddress!}
             nofaId={nofa?.id!}
+            nofaTxnHash={nofa?.txnHash!}
           />
-        ) : null} */}
+        ) : null}
 
         <Flex
           bgColor="#E2E8F0"
