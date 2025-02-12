@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, Flex } from "@chakra-ui/react";
-import OnchainKitWallet from "../chakra/ui/onchainkit-wallet";
+// import OnchainKitWallet from "../chakra/ui/onchainkit-wallet";
 import { HeaderLogo } from "./svg-icons/logos/header-logo";
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
