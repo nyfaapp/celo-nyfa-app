@@ -70,7 +70,7 @@ export default function CreateYourNoFA() {
         type: "success",
       });
 
-      router.push(`/particular-nofas/${createdNoFA.id}`);
+      router.push(`/particular-nofa/${createdNoFA.id}`);
     } catch (error) {
       toaster.create({
         description: "NoFA creation failed.",

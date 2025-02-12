@@ -21,7 +21,7 @@ export default function AuthRedirectProvider({
     "/all-nofas",
     "/create-your-nofa",
     "/your-nofas",
-    "/particular-nofas",
+    "/particular-nofa",
   ];
 
   const isProtectedRoute = () => {

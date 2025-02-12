@@ -97,7 +97,7 @@ export default function YourNoFas() {
                     setNoFAFromData(nofa);
                     // Give a tiny delay to ensure state is updated
                     await new Promise((resolve) => setTimeout(resolve, 0));
-                    router.push(`/particular-nofas/${nofa.id}`);
+                    router.push(`/particular-nofa/${nofa.id}`);
                   }}
                 >
                   <>
