@@ -1,16 +1,27 @@
-export async function POST(req: Request) {
-  const { filename, data } = await req.json();
+import { NextRequest, NextResponse } from 'next/server';
 
-  // Remove the data URL prefix to get just the base64 data
-  const base64Data = data.split(",")[1];
-  const buffer = Buffer.from(base64Data, "base64");
+export async function POST(req: NextRequest) {
+  try {
+    const formData = await req.formData();
+    const file = formData.get('file') as File;
+    
+    if (!file) {
+      return new NextResponse('No file provided', { status: 400 });
+    }
 
-  // Set appropriate headers for direct download
-  const headers = new Headers();
-  headers.set("Content-Type", "application/octet-stream");
-  headers.set("Content-Disposition", `attachment; filename="${filename}"`);
+    // Convert file to ArrayBuffer
+    const buffer = await file.arrayBuffer();
 
-  return new Response(buffer, {
-    headers,
-  });
+    // Return the file with appropriate headers
+    return new NextResponse(buffer, {
+      headers: {
+        'Content-Type': 'image/png',
+        'Content-Disposition': `attachment; filename="${file.name}"`,
+        'Content-Length': buffer.byteLength.toString(),
+      },
+    });
+  } catch (error) {
+    console.error('Error in downloadPNG route:', error);
+    return new NextResponse('Internal Server Error', { status: 500 });
+  }
 }
