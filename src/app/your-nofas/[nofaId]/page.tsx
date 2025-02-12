@@ -254,35 +254,91 @@ export default function YourParticularNoFA() {
       duration: 3000,
       type: "info",
     });
-
-    const file = await createNoFAPNG();
-
-    if (file) {
+  
+    try {
+      const file = await createNoFAPNG();
+      
+      if (file) {
+        toaster.create({
+          description: "PNG file created! Starting download...",
+          duration: 3000,
+          type: "info",
+        });
+  
+        // Convert file to base64
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        
+        reader.onload = async () => {
+          const base64Data = reader.result as string;
+          
+          try {
+            // Send base64 data to backend endpoint
+            const response = await fetch('/api/downloadPNG', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                filename: file.name,
+                data: base64Data,
+              }),
+            });
+  
+            if (!response.ok) {
+              throw new Error('Download failed');
+            }
+  
+            // Get the direct download URL from the response
+            const { downloadUrl } = await response.json();
+            
+            // Create download link and click it
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = file.name;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+  
+            toaster.create({
+              description: "Download success!",
+              duration: 3000,
+              type: "success",
+            });
+          } catch (error) {
+            console.error('Download error:', error);
+            toaster.create({
+              description: "Download failed. Please try again.",
+              duration: 3000,
+              type: "error",
+            });
+          }
+        };
+  
+        reader.onerror = () => {
+          toaster.create({
+            description: "Error processing file. Please try again.",
+            duration: 3000,
+            type: "error",
+          });
+        };
+      } else {
+        toaster.create({
+          description: "PNG file creation unsuccessful. Try again later.",
+          duration: 3000,
+          type: "warning",
+        });
+      }
+    } catch (error) {
+      console.error('Error in download process:', error);
       toaster.create({
-        description: "PNG file successfully created! Downloading ...",
+        description: "An unexpected error occurred. Please try again.",
         duration: 3000,
-        type: "info",
+        type: "error",
       });
-      const link = document.createElement("a");
-      link.download = file.name;
-      link.href = URL.createObjectURL(file);
-      link.click();
-      URL.revokeObjectURL(link.href);
-
-      toaster.create({
-        description: "Download success!",
-        duration: 3000,
-        type: "success",
-      });
-    } else {
-      toaster.create({
-        description: "PNG file creation unsuccessful. Try again later.",
-        duration: 3000,
-        type: "warning",
-      });
+    } finally {
+      setIsDownloading(false);
     }
-
-    setIsDownloading(false);
   };
 
   return (
