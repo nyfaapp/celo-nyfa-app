@@ -94,6 +94,7 @@ export default function AgentStreamComponent({
               sentiment: headline.sentiment || null,
             }))
           : null,
+        storageURI: data.storageURI || null,
       };
 
       setNoFAFromData(parsedNoFA);
