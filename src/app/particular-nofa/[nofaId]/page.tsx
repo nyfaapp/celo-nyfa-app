@@ -27,7 +27,65 @@ export default function ParticularNoFA() {
 
   const { user, supabase } = useSupabase();
 
-  const creator = useCreatorStore((state) => state.creator);
+  // const creator = useCreatorStore((state) => state.creator);
+
+  const uploadNoFAToSupabase = async (
+    file: File | null
+  ): Promise<string | null> => {
+    if (!file || !nofa?.id) return null;
+
+    try {
+      // Create the storage path
+      const filename = `${nofa.id}-${Date.now()}.png`;
+      const storagePath = `nofas/${filename}`;
+
+      // Upload to Supabase storage
+      const { data, error } = await supabase.storage
+        .from("nofas")
+        .upload(storagePath, file, {
+          contentType: "image/png",
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Error uploading to Supabase:", error);
+        throw error;
+      }
+
+      // Get the public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("nyfa-app").getPublicUrl(storagePath);
+
+      // Update the nofa record with the storage URI
+      const { error: updateError } = await supabase
+        .from("NOFAS")
+        .update({ storageURI: publicUrl })
+        .eq("id", nofa.id)
+        .single();
+
+      if (updateError) {
+        console.error("Error updating nofa record:", updateError);
+        throw updateError;
+      }
+
+      // Update local state
+      setNoFAFromData({
+        ...nofa,
+        storageURI: publicUrl,
+      });
+
+      return publicUrl;
+    } catch (error) {
+      console.error("Error in uploadNoFAToSupabase:", error);
+      toaster.create({
+        description: "Failed to upload image to storage",
+        duration: 3000,
+        type: "error",
+      });
+      return null;
+    }
+  };
 
   const uploadToIPFS = async (): Promise<void> => {
     setIsUploadingToIPFS(true);
@@ -254,62 +312,56 @@ export default function ParticularNoFA() {
       duration: 3000,
       type: "info",
     });
-
+  
     try {
+      // If we have a storage URI, download from there
+      if (nofa?.storageURI) {
+        const response = await fetch(nofa.storageURI);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `nofa-${nofa.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        return;
+      }
+  
+      // Otherwise create new PNG and upload
       const file = await createNoFAPNG();
-
+      
       if (file) {
         toaster.create({
           description: "PNG file created! Starting download...",
           duration: 3000,
           type: "info",
         });
-
-        // Create FormData and append the file
-        const formData = new FormData();
-        formData.append("file", file);
-
-        try {
-          const response = await fetch("/api/downloadPNG", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            throw new Error("Download failed");
-          }
-
-          // Get the blob from the response
-          const blob = await response.blob();
-
-          // Create object URL for the blob
-          const url = window.URL.createObjectURL(blob);
-
-          // Create download link
-          const a = document.createElement("a");
-          a.style.display = "none";
-          a.href = url;
-          a.download = file.name;
-
-          // Add to document, click, and cleanup
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
-          document.body.removeChild(a);
-
-          toaster.create({
-            description: "Download success!",
-            duration: 3000,
-            type: "success",
-          });
-        } catch (error) {
-          console.error("Download error:", error);
-          toaster.create({
-            description: "Download failed. Please try again.",
-            duration: 3000,
-            type: "error",
-          });
+  
+        const storageURI = await uploadNoFAToSupabase(file);
+        if (!storageURI) {
+          throw new Error('Failed to upload to storage');
         }
+  
+        const response = await fetch(storageURI);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+  
+        toaster.create({
+          description: "Download success!",
+          duration: 3000,
+          type: "success",
+        });
       } else {
         toaster.create({
           description: "PNG file creation unsuccessful. Try again later.",
@@ -318,7 +370,7 @@ export default function ParticularNoFA() {
         });
       }
     } catch (error) {
-      console.error("Error in download process:", error);
+      console.error('Error in download process:', error);
       toaster.create({
         description: "An unexpected error occurred. Please try again.",
         duration: 3000,
