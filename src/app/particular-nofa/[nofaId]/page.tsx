@@ -306,8 +306,9 @@ export default function ParticularNoFA() {
   };
 
   const downloadNoFAPNG = async () => {
+    setIsDownloading(true);
+
     if (!nofa?.storageURI) {
-      setIsDownloading(true);
       toaster.create({
         description: "Creating PNG file...",
         duration: 3000,
@@ -339,8 +340,6 @@ export default function ParticularNoFA() {
           duration: 3000,
           type: "error",
         });
-      } finally {
-        setIsDownloading(false);
       }
     } else {
       try {
@@ -366,6 +365,7 @@ export default function ParticularNoFA() {
         });
       }
     }
+    setIsDownloading(false);
   };
 
   return (
