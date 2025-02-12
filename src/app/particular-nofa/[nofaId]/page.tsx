@@ -321,7 +321,18 @@ export default function ParticularNoFA() {
         const storageURI = await uploadNoFAToSupabase(file);
         if (!storageURI) throw new Error("Failed to upload to storage");
 
-        window.open(storageURI, "_blank");
+        // Trigger download for the new file
+        const response = await fetch(storageURI);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `nofa-${nofa?.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       } catch (error) {
         console.error("Error:", error);
         toaster.create({
@@ -333,7 +344,27 @@ export default function ParticularNoFA() {
         setIsDownloading(false);
       }
     } else {
-      window.open(nofa.storageURI, "_blank");
+      // Trigger download for existing file
+      try {
+        const response = await fetch(nofa.storageURI);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `nofa-${nofa.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (error) {
+        console.error("Error downloading:", error);
+        toaster.create({
+          description: "Failed to download image. Please try again.",
+          duration: 3000,
+          type: "error",
+        });
+      }
     }
   };
 
