@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Parkinsans } from "next/font/google";
 import "./globals.css";
-import "@coinbase/onchainkit/styles.css";
-import "./onchain-overrides.css";
+import '@rainbow-me/rainbowkit/styles.css';
 import MainProvider from "@/providers/main-provider";
 
 const parkinsans = Parkinsans({
