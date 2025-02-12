@@ -1,5 +1,5 @@
 {
-  "name": "nyfa-app",
+  "name": "celo-nyfa-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,6 @@
     "@chakra-ui/react": "^3.7.0",
     "@coinbase/agentkit": "^0.1.1",
     "@coinbase/agentkit-langchain": "^0.1.0",
-    "@coinbase/onchainkit": "^0.36.9",
     "@emotion/react": "^11.14.0",
     "@heroui/autocomplete": "^2.3.11",
     "@heroui/divider": "^2.2.6",
@@ -24,6 +23,7 @@
     "@langchain/langgraph": "^0.2.45",
     "@langchain/openai": "^0.4.2",
     "@privy-io/server-auth": "^1.18.4",
+    "@rainbow-me/rainbowkit": "^2.2.3",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.48.1",
     "@tanstack/react-query": "^5.66.0",
@@ -37,8 +37,8 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-icons": "^5.4.0",
-    "viem": "^2.22.21",
-    "wagmi": "^2.14.9",
+    "viem": "^2.23.2",
+    "wagmi": "^2.14.11",
     "zod": "^3.24.1"
   },
   "devDependencies": {
