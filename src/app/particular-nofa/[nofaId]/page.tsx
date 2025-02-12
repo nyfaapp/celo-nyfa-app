@@ -306,6 +306,28 @@ export default function ParticularNoFA() {
   };
 
   const downloadNoFAPNG = async () => {
+    // Check if we're in a WebView
+    const isWebView = !!(window as any).ReactNativeWebView;
+
+    const downloadInBrowser = async (url: string, filename: string) => {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(a);
+    };
+
+    const downloadInWebView = (url: string) => {
+      // Use direct navigation for WebView
+      window.location.href = url;
+    };
+
     if (!nofa?.storageURI) {
       setIsDownloading(true);
       toaster.create({
@@ -321,18 +343,11 @@ export default function ParticularNoFA() {
         const storageURI = await uploadNoFAToSupabase(file);
         if (!storageURI) throw new Error("Failed to upload to storage");
 
-        // Trigger download for the new file
-        const response = await fetch(storageURI);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        a.download = `nofa-${nofa?.id}.png`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        if (isWebView) {
+          downloadInWebView(storageURI);
+        } else {
+          await downloadInBrowser(storageURI, `nofa-${nofa?.id}.png`);
+        }
       } catch (error) {
         console.error("Error:", error);
         toaster.create({
@@ -344,19 +359,12 @@ export default function ParticularNoFA() {
         setIsDownloading(false);
       }
     } else {
-      // Trigger download for existing file
       try {
-        const response = await fetch(nofa.storageURI);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        a.download = `nofa-${nofa.id}.png`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
+        if (isWebView) {
+          downloadInWebView(nofa.storageURI);
+        } else {
+          await downloadInBrowser(nofa.storageURI, `nofa-${nofa.id}.png`);
+        }
       } catch (error) {
         console.error("Error downloading:", error);
         toaster.create({
