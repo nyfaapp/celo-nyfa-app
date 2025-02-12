@@ -321,17 +321,17 @@ export default function ParticularNoFA() {
         const storageURI = await uploadNoFAToSupabase(file);
         if (!storageURI) throw new Error("Failed to upload to storage");
 
-        // Trigger download for the new file
-        const response = await fetch(storageURI);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
+        // Use proxy URL directly in an anchor tag
+        const proxyUrl = `/api/proxyImages?url=${encodeURIComponent(
+          storageURI
+        )}`;
         const a = document.createElement("a");
         a.style.display = "none";
-        a.href = url;
+        a.href = proxyUrl; // Use proxy URL directly instead of blob
+        console.log("a.href:", a.href);
         a.download = `nofa-${nofa?.id}.png`;
         document.body.appendChild(a);
         a.click();
-        window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       } catch (error) {
         console.error("Error:", error);
@@ -344,18 +344,19 @@ export default function ParticularNoFA() {
         setIsDownloading(false);
       }
     } else {
-      // Trigger download for existing file
       try {
-        const response = await fetch(nofa.storageURI);
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
+        // Use proxy URL directly for existing file
+        const proxyUrl = `/api/proxyImages?url=${encodeURIComponent(
+          nofa.storageURI
+        )}`;
         const a = document.createElement("a");
         a.style.display = "none";
-        a.href = url;
+        a.href = proxyUrl; // Use proxy URL directly instead of blob
+
+        console.log("a.href:", a.href);
         a.download = `nofa-${nofa.id}.png`;
         document.body.appendChild(a);
         a.click();
-        window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       } catch (error) {
         console.error("Error downloading:", error);
