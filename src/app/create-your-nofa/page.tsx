@@ -94,6 +94,7 @@ export default function CreateYourNoFA() {
       totalSupply = null,
       circulatingSupply = null,
       headlines = null,
+      storageURI = null
     } = props;
 
     const { data, error } = await supabase
@@ -108,6 +109,7 @@ export default function CreateYourNoFA() {
         totalSupply,
         circulatingSupply,
         headlines,
+        storageURI
       })
       .select()
       .single();
@@ -141,6 +143,7 @@ export default function CreateYourNoFA() {
             sentiment: headline.sentiment || null,
           }))
         : null,
+      storageURI: data.storageURI || null,
     };
 
     return parsedNoFA;
