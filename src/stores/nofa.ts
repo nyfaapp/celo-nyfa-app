@@ -43,7 +43,8 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
           totalSupply,
           circulatingSupply,
           headlines,
-          timeCreated
+          timeCreated,
+          storageURI
         `
         )
         .eq("creatorAuthId", creatorAuthId);
@@ -76,7 +77,8 @@ export const useNoFAStore = create<NoFAStore>((set) => ({
           totalSupply,
           circulatingSupply,
           headlines,
-          timeCreated
+          timeCreated,
+          storageURI
         `
         )
         .neq("creatorAuthId", creatorAuthId);

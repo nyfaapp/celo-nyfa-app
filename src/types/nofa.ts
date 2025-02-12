@@ -17,6 +17,7 @@ export interface NoFA {
   circulatingSupply: number | null | undefined;
   headlines: Headline[] | null | undefined;
   timeCreated: string | null | undefined;// Array of headline objects
+  storageURI: string | null | undefined
 }
 
 
@@ -26,6 +27,7 @@ export interface CreateNoFAProps {
     txnHash?: string | null | undefined;
     ipfsURI?: string | null | undefined;
     coinImageURI?: string | null | undefined;
+    storageURI?: string | null | undefined;
     marketCap?: number | null | undefined;
     totalSupply?: number | null | undefined;
     circulatingSupply?: number | null | undefined;
