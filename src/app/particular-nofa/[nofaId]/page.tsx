@@ -328,7 +328,6 @@ export default function ParticularNoFA() {
         const a = document.createElement("a");
         a.style.display = "none";
         a.href = proxyUrl; // Use proxy URL directly instead of blob
-        console.log("a.href:", a.href);
         a.download = `nofa-${nofa?.id}.png`;
         document.body.appendChild(a);
         a.click();
