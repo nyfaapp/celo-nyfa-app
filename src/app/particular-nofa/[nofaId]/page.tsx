@@ -2,12 +2,12 @@
 
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import AgentStreamComponent from "@/components/nyfa/agent-stream";
-import CoinInfo from "@/components/nyfa/components/coin-info";
-import CoinPerspectiveSection from "@/components/nyfa/components/coin-perspective";
-import Footer from "@/components/nyfa/components/footer";
-import HeadlineSection from "@/components/nyfa/components/headline-section";
-import NoFAHeader from "@/components/nyfa/components/nofa-header";
-import TokenomicsSection from "@/components/nyfa/components/tokenomics-section";
+import CoinInfo from "@/components/nyfa/nofa-components/coin-info";
+import CoinPerspectiveSection from "@/components/nyfa/nofa-components/coin-perspective";
+import Footer from "@/components/nyfa/nofa-components/footer";
+import HeadlineSection from "@/components/nyfa/nofa-components/headline-section";
+import NoFAHeader from "@/components/nyfa/nofa-components/nofa-header";
+import TokenomicsSection from "@/components/nyfa/nofa-components/tokenomics-section";
 import { LoveIcon } from "@/components/nyfa/svg-icons/love-icon";
 import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import { useSupabase } from "@/providers/supabase-provider";
@@ -306,28 +306,6 @@ export default function ParticularNoFA() {
   };
 
   const downloadNoFAPNG = async () => {
-    // Check if we're in a WebView
-    const isWebView = !!(window as any).ReactNativeWebView;
-
-    const downloadInBrowser = async (url: string, filename: string) => {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(blobUrl);
-      document.body.removeChild(a);
-    };
-
-    const downloadInWebView = (url: string) => {
-      // Use direct navigation for WebView
-      window.location.href = url;
-    };
-
     if (!nofa?.storageURI) {
       setIsDownloading(true);
       toaster.create({
@@ -343,11 +321,18 @@ export default function ParticularNoFA() {
         const storageURI = await uploadNoFAToSupabase(file);
         if (!storageURI) throw new Error("Failed to upload to storage");
 
-        if (isWebView) {
-          downloadInWebView(storageURI);
-        } else {
-          await downloadInBrowser(storageURI, `nofa-${nofa?.id}.png`);
-        }
+        // Trigger download for the new file
+        const response = await fetch(storageURI);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `nofa-${nofa?.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       } catch (error) {
         console.error("Error:", error);
         toaster.create({
@@ -359,12 +344,19 @@ export default function ParticularNoFA() {
         setIsDownloading(false);
       }
     } else {
+      // Trigger download for existing file
       try {
-        if (isWebView) {
-          downloadInWebView(nofa.storageURI);
-        } else {
-          await downloadInBrowser(nofa.storageURI, `nofa-${nofa.id}.png`);
-        }
+        const response = await fetch(nofa.storageURI);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `nofa-${nofa.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
       } catch (error) {
         console.error("Error downloading:", error);
         toaster.create({
