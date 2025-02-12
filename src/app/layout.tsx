@@ -9,7 +9,7 @@ const parkinsans = Parkinsans({
 });
 
 export const metadata: Metadata = {
-  title: "Nyfa App",
+  title: "Celo Nyfa App",
   description: "Create Your NoFA",
 };
 
