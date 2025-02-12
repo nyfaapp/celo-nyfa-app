@@ -4,6 +4,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import OnchainKitWallet from "../chakra/ui/onchainkit-wallet";
 import { HeaderLogo } from "./svg-icons/logos/header-logo";
 import Link from "next/link";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Header = () => {
   return (
@@ -13,7 +14,18 @@ const Header = () => {
           <HeaderLogo />
         </Link>
 
-        <OnchainKitWallet />
+        <ConnectButton
+          chainStatus="none"
+          accountStatus={{
+            smallScreen: "avatar",
+            largeScreen: "avatar",
+          }}
+          showBalance={{
+            smallScreen: false,
+            largeScreen: true,
+          }}
+          label="Connect"
+        />
       </Flex>
     </Box>
   );
