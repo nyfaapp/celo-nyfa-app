@@ -35,14 +35,14 @@ export default function ParticularNoFA() {
     if (!file || !nofa?.id) return null;
 
     try {
-      // Create the storage path
-      const filename = `${nofa.id}-${Date.now()}.png`;
-      const storagePath = `nofas/${filename}`;
+      // Create the filename with the exact format shown in your storage
+      const timestamp = Date.now();
+      const filename = `${nofa.id}-${timestamp}.png`;
 
       // Upload to Supabase storage
       const { data, error } = await supabase.storage
         .from("nofas")
-        .upload(storagePath, file, {
+        .upload(filename, file, {
           contentType: "image/png",
           upsert: true,
         });
@@ -55,7 +55,7 @@ export default function ParticularNoFA() {
       // Get the public URL
       const {
         data: { publicUrl },
-      } = supabase.storage.from("nyfa-app").getPublicUrl(storagePath);
+      } = supabase.storage.from("nofas").getPublicUrl(filename);
 
       // Update the nofa record with the storage URI
       const { error: updateError } = await supabase
@@ -306,78 +306,34 @@ export default function ParticularNoFA() {
   };
 
   const downloadNoFAPNG = async () => {
-    setIsDownloading(true);
-    toaster.create({
-      description: "Creating PNG file ...",
-      duration: 3000,
-      type: "info",
-    });
-  
-    try {
-      // If we have a storage URI, download from there
-      if (nofa?.storageURI) {
-        const response = await fetch(nofa.storageURI);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `nofa-${nofa.id}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        return;
-      }
-  
-      // Otherwise create new PNG and upload
-      const file = await createNoFAPNG();
-      
-      if (file) {
-        toaster.create({
-          description: "PNG file created! Starting download...",
-          duration: 3000,
-          type: "info",
-        });
-  
-        const storageURI = await uploadNoFAToSupabase(file);
-        if (!storageURI) {
-          throw new Error('Failed to upload to storage');
-        }
-  
-        const response = await fetch(storageURI);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-  
-        toaster.create({
-          description: "Download success!",
-          duration: 3000,
-          type: "success",
-        });
-      } else {
-        toaster.create({
-          description: "PNG file creation unsuccessful. Try again later.",
-          duration: 3000,
-          type: "warning",
-        });
-      }
-    } catch (error) {
-      console.error('Error in download process:', error);
+    if (!nofa?.storageURI) {
+      setIsDownloading(true);
       toaster.create({
-        description: "An unexpected error occurred. Please try again.",
+        description: "Creating PNG file...",
         duration: 3000,
-        type: "error",
+        type: "info",
       });
-    } finally {
-      setIsDownloading(false);
+
+      try {
+        const file = await createNoFAPNG();
+        if (!file) throw new Error("Failed to create PNG");
+
+        const storageURI = await uploadNoFAToSupabase(file);
+        if (!storageURI) throw new Error("Failed to upload to storage");
+
+        window.open(storageURI, "_blank");
+      } catch (error) {
+        console.error("Error:", error);
+        toaster.create({
+          description: "Failed to create image. Please try again.",
+          duration: 3000,
+          type: "error",
+        });
+      } finally {
+        setIsDownloading(false);
+      }
+    } else {
+      window.open(nofa.storageURI, "_blank");
     }
   };
 
