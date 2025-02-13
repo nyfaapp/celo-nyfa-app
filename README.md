@@ -1,4 +1,4 @@
-# Nyfa App - AI-Powered Crypto Research Platform
+# Celo Nyfa App - AI-Powered Crypto Research Platform
 > Automated Crypto Report NFT Generator on Celo
 
 👧🏾 **Nyfa** - Not Your Financial Advisor (Human Name: Nyla)  
