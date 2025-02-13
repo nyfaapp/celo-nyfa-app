@@ -71,7 +71,7 @@ NoFA NFTs serve as:
 1. Clone and install:
 ```bash
 git clone https://github.com/nyfaapp/celo-nyfa-app
-cd nyfa-app
+cd celo-nyfa-app
 npm install  # or yarn install
 ```
 
