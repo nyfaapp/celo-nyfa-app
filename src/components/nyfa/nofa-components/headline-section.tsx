@@ -1,18 +1,20 @@
 "use client";
 
-export interface HeadlinesSectionProps {
-  headlines?: Headline[];
-}
-
-
-
 import { Text, Flex, Image } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { LatestHeadlinesIcon } from "@/components/nyfa/svg-icons/latest-headlines-icon";
 import { getColorForHeadline } from "@/utils/colorForNoFa";
 import { Headline } from "@/types/nofa";
 
+export interface HeadlinesSectionProps {
+  headlines?: Headline[];
+}
+
 const HeadlinesSection: React.FC<HeadlinesSectionProps> = ({ headlines }) => {
+  if (!headlines || headlines.length === 0) {
+    return null;
+  }
+
   return (
     <>
       <Flex direction="row" mt={2} p={2}>
@@ -22,7 +24,7 @@ const HeadlinesSection: React.FC<HeadlinesSectionProps> = ({ headlines }) => {
         </Text>
       </Flex>
 
-      {headlines?.map((headline: Headline, index) => (
+      {headlines.map((headline: Headline, index) => (
         <Flex
           key={index}
           direction="row"
@@ -33,11 +35,8 @@ const HeadlinesSection: React.FC<HeadlinesSectionProps> = ({ headlines }) => {
           h="150px"
           borderRadius="10px"
           justify="center"
-          onClick={()=>{
-            window.open(
-              headline.link!,
-              "_blank"
-            )
+          onClick={() => {
+            window.open(headline.link!, "_blank");
           }}
         >
           <Image
