@@ -70,7 +70,7 @@ NoFA NFTs serve as:
 ### Quick Start
 1. Clone and install:
 ```bash
-git clone https://github.com/andrewkimjoseph/nyfa-app.git
+git clone https://github.com/nyfaapp/celo-nyfa-app
 cd nyfa-app
 npm install  # or yarn install
 ```
