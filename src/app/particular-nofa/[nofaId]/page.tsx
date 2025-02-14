@@ -463,7 +463,7 @@ export default function ParticularNoFA() {
             totalSupply={nofa?.totalSupply!}
             circulatingSupply={nofa?.circulatingSupply!}
           />
-          <HeadlineSection headlines={nofa?.headlines!} />
+          {/* <HeadlineSection headlines={nofa?.headlines!} /> */}
           <Footer timeCreated={nofa?.timeCreated!} />
         </Flex>
       </Flex>
