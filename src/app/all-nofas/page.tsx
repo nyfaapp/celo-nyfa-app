@@ -3,6 +3,7 @@
 import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import useMixpanel from "@/hooks/useMixpanel";
 import { useSupabase } from "@/providers/supabase-provider";
+import { useCreatorStore } from "@/stores/creator";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
 import { Button, Text, Flex, Box, SimpleGrid, Image } from "@chakra-ui/react";
@@ -15,7 +16,9 @@ export default function AllNoFAs() {
   const router = useRouter();
   const { allNofas, isLoadingAll, fetchAllOtherNoFAs, setNoFAFromData } =
     useNoFAStore();
-  const { trackMixpanelEvent } = useMixpanel();
+  const { trackMixpanelEvent, identifyUser } = useMixpanel();
+
+  const creator = useCreatorStore((state) => state.creator);
 
   const { user } = useSupabase();
 
@@ -23,6 +26,9 @@ export default function AllNoFAs() {
     if (user) {
       if (user.id) {
         fetchAllOtherNoFAs(user.id);
+        if (creator) {
+          identifyUser(user.id, { ...creator });
+        }
       }
     }
   }, [user]);
