@@ -1,11 +1,11 @@
-'use client';
-import { useEffect, createContext } from 'react';
-import { initMixpanel } from '@/config/mixpanel';
-import mixpanel from 'mixpanel';
+"use client";
+import { useEffect, createContext } from "react";
+import { initMixpanel } from "@/config/mixpanel";
+import mixpanel from "mixpanel-browser";
 
 // Define the shape of the context value
 interface MixpanelContextType {
-  trackAmplitudeEvent: (eventName: string, eventProperties: {}) => void;
+  trackMixpanelEvent: (eventName: string, eventProperties: {}) => void;
   identifyUser: (userId: string, userDetails: {}) => void;
 }
 
@@ -30,7 +30,7 @@ const MixpanelContextProvider = ({
     mixpanel.people.set(userId, userDetails);
   };
 
-  const value: MixpanelContextType = { trackAmplitudeEvent: trackMixpanelEvent, identifyUser };
+  const value: MixpanelContextType = { trackMixpanelEvent, identifyUser };
 
   return (
     <MixpanelContext.Provider value={value}>

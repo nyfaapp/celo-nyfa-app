@@ -1,5 +1,5 @@
-import mixpanel from 'mixpanel';
- 
+import mixpanel from 'mixpanel-browser';
+
 const MIXPANEL_TOKEN = process.env.NEXT_PUBLIC_MIXPANEL_TOKEN;
  
 export const initMixpanel = () => {
@@ -8,5 +8,5 @@ export const initMixpanel = () => {
     return;
   }
  
-  mixpanel.init(MIXPANEL_TOKEN);
+  mixpanel.init(MIXPANEL_TOKEN,);
 }
