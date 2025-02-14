@@ -27,7 +27,12 @@ const MixpanelContextProvider = ({
   };
 
   const identifyUser = async (userAuthId: string, userDetails: {}) => {
-    mixpanel.people.set_once(userAuthId, userDetails);
+    mixpanel.identify(userAuthId);
+
+    mixpanel.people.set({
+      $distinct_id: userAuthId,
+      ...userDetails,
+    });
   };
 
   const value: MixpanelContextType = { trackMixpanelEvent, identifyUser };
