@@ -6,7 +6,7 @@ import mixpanel from "mixpanel-browser";
 // Define the shape of the context value
 interface MixpanelContextType {
   trackMixpanelEvent: (eventName: string, eventProperties: {}) => void;
-  identifyUser: (userId: string, userDetails: {}) => void;
+  identifyUser: (userAuthId: string, userDetails: {}) => void;
 }
 
 export const MixpanelContext = createContext<MixpanelContextType | undefined>(
@@ -26,8 +26,8 @@ const MixpanelContextProvider = ({
     mixpanel.track(eventName, eventProperties);
   };
 
-  const identifyUser = (userId: string, userDetails: {}) => {
-    mixpanel.people.set(userId, userDetails);
+  const identifyUser = async (userAuthId: string, userDetails: {}) => {
+    mixpanel.people.set_once(userAuthId, userDetails);
   };
 
   const value: MixpanelContextType = { trackMixpanelEvent, identifyUser };
