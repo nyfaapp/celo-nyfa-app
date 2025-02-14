@@ -1,6 +1,7 @@
 "use client";
 
 import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
+import useMixpanel from "@/hooks/useMixpanel";
 import { useSupabase } from "@/providers/supabase-provider";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
@@ -14,6 +15,7 @@ export default function AllNoFAs() {
   const router = useRouter();
   const { allNofas, isLoadingAll, fetchAllOtherNoFAs, setNoFAFromData } =
     useNoFAStore();
+  const { trackMixpanelEvent } = useMixpanel();
 
   const { user } = useSupabase();
 
@@ -98,6 +100,10 @@ export default function AllNoFAs() {
                     setNoFAFromData(nofa);
                     // Give a tiny delay to ensure state is updated
                     await new Promise((resolve) => setTimeout(resolve, 0));
+                    trackMixpanelEvent("Particular All NoFA clicked", {
+                      ...nofa,
+                      currentUserAuthId: user?.id,
+                    });
                     router.push(`/particular-nofa/${nofa.id}`);
                   }}
                 >

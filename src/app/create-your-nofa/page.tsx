@@ -13,6 +13,7 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import { Spinner } from "@heroui/spinner";
 import { CreateNoFAProps, Headline, NoFA } from "@/types/nofa";
+import useMixpanel from "@/hooks/useMixpanel";
 
 export default function CreateYourNoFA() {
   const [coinId, setCoinId] = useState<string>("ethereum");
@@ -23,7 +24,8 @@ export default function CreateYourNoFA() {
 
   const [isCreatingNoFA, setIsCreatingNoFA] = useState(false);
 
-  const { setNoFAFromData } = useNoFAStore();
+  const { setNoFAFromData, nofa } = useNoFAStore();
+  const { trackMixpanelEvent } = useMixpanel();
 
   const createNoFAFn = async (coinId: string) => {
     setIsCreatingNoFA(true);
@@ -70,6 +72,13 @@ export default function CreateYourNoFA() {
         type: "success",
       });
 
+      if (nofa) {
+        trackMixpanelEvent("Particular Your NoFA created", {
+          ...nofa,
+          currentUserAuthId: user?.id,
+        });
+      }
+
       router.push(`/particular-nofa/${createdNoFA.id}`);
     } catch (error) {
       toaster.create({
@@ -94,7 +103,7 @@ export default function CreateYourNoFA() {
       totalSupply = null,
       circulatingSupply = null,
       headlines = null,
-      storageURI = null
+      storageURI = null,
     } = props;
 
     const { data, error } = await supabase
@@ -109,7 +118,7 @@ export default function CreateYourNoFA() {
         totalSupply,
         circulatingSupply,
         headlines,
-        storageURI
+        storageURI,
       })
       .select()
       .single();
