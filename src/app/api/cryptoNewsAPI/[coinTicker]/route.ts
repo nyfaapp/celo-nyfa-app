@@ -23,16 +23,17 @@ export async function GET(
   request: NextRequest,
   props: { params: Promise<{ coinTicker: string }> }
 ) {
-  const params = await props.params;
-  const { coinTicker } = params;
-
   try {
+    const params = await props.params;
+    const { coinTicker } = params;
+
     const response = await fetch(
       `https://cryptonews-api.com/api/v1?tickers=${coinTicker}&items=3&page=1&token=${process.env.CRYPTONEWS_API_KEY}`
     );
 
     if (!response.ok) {
-      throw new Error("Failed to fetch news data");
+      console.error(`API request failed with status: ${response.status}`);
+      return NextResponse.json([]);
     }
 
     const data: NewsResponse = await response.json();
@@ -41,23 +42,16 @@ export async function GET(
       return NextResponse.json([]);
     }
 
-    const headlines = [];
-
-    for (const item of data.data) {
-      headlines.push({
-        title: item.title,
-        imageURL: item.image_url,
-        link: item.news_url,
-        sentiment: item.sentiment,
-      });
-    }
+    const headlines = data.data.map(item => ({
+      title: item.title,
+      imageURL: item.image_url,
+      link: item.news_url,
+      sentiment: item.sentiment,
+    }));
 
     return NextResponse.json(headlines);
   } catch (error) {
     console.error("Error fetching news:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch news data" },
-      { status: 500 }
-    );
+    return NextResponse.json([]);
   }
 }
