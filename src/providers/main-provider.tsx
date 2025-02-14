@@ -7,6 +7,7 @@ import SupabaseProvider from "@/providers/supabase-provider";
 import AuthRedirectProvider from "@/providers/auth-redirect-provider";
 import Header from "@/components/nyfa/header";
 import MobileOnlyProvider from "./mobile-only-provider";
+import MixpanelContextProvider from "./mixpanel-provider";
 
 export default function MainProvider({
   children,
@@ -14,17 +15,19 @@ export default function MainProvider({
   children: React.ReactNode;
 }) {
   return (
-    <Provider>
-      <MobileOnlyProvider>
-        <Web3Provider>
-          <ColorModeProvider forcedTheme="dark">
-            <SupabaseProvider>
-              <Header />
-              <AuthRedirectProvider>{children}</AuthRedirectProvider>
-            </SupabaseProvider>
-          </ColorModeProvider>
-        </Web3Provider>
-      </MobileOnlyProvider>
-    </Provider>
+    <MixpanelContextProvider>
+      <Provider>
+        <MobileOnlyProvider>
+          <Web3Provider>
+            <ColorModeProvider forcedTheme="dark">
+              <SupabaseProvider>
+                <Header />
+                <AuthRedirectProvider>{children}</AuthRedirectProvider>
+              </SupabaseProvider>
+            </ColorModeProvider>
+          </Web3Provider>
+        </MobileOnlyProvider>
+      </Provider>
+    </MixpanelContextProvider>
   );
 }
