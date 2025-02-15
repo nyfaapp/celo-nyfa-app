@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
 import { useRouter } from "next/navigation";
 import { BodyLogoNotConnected } from "@/components/nyfa/svg-icons/logos/body-logo-not-connected";
+import mixpanel from "mixpanel-browser";
+import { Creator } from "@/types/creator";
 
 // import html2canvas from "html2canvas";
 // import { useRef } from "react";
@@ -28,6 +30,8 @@ export default function FirstPage() {
   }, [user, router]);
 
   async function handleAnonymousSignIn() {
+    mixpanel.track("Get started clicked");
+
     setIsCreatingAnonUser(true);
     try {
       const {
@@ -78,7 +82,6 @@ export default function FirstPage() {
           }),
         });
 
-
         const {
           privyWalletId: _privyWalletId,
           privyWalletAddress: _privyWalletAddress,
@@ -98,14 +101,16 @@ export default function FirstPage() {
         if (updatedUserAddPrivyWalletIdError)
           throw updatedUserAddPrivyWalletIdError;
 
-        const { error: insertError } = await supabase.from("CREATORS").insert([
-          {
-            authId: updatedUserAddPrivyWalletId?.user?.id,
-            userWalletAddress: address,
-            privyWalletAddress: _privyWalletAddress,
-            privyWalletId: _privyWalletId,
-          },
-        ]);
+        const { data: insertData, error: insertError } = await supabase
+          .from("CREATORS")
+          .insert([
+            {
+              authId: updatedUserAddPrivyWalletId?.user?.id,
+              userWalletAddress: address,
+              privyWalletAddress: _privyWalletAddress,
+              privyWalletId: _privyWalletId,
+            },
+          ]);
 
         if (insertError) throw insertError;
 
@@ -113,6 +118,10 @@ export default function FirstPage() {
           description: "Successfully signed in with wallet!",
           duration: 3000,
           type: "success",
+        });
+
+        mixpanel.track("Account created", {
+          ...(insertData as unknown as Creator),
         });
 
         router.push("/all-nofas");
@@ -162,7 +171,7 @@ export default function FirstPage() {
           onClick={handleAnonymousSignIn}
         >
           {isCreatingAnonUser ? (
-            <Spinner size="sm"/>
+            <Spinner size="sm" />
           ) : (
             <Text color={"#0F1C33"} fontSize={"14px"} fontWeight={"normal"}>
               Get started

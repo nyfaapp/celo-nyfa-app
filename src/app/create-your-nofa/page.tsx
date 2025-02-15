@@ -13,6 +13,7 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import { Spinner } from "@heroui/spinner";
 import { CreateNoFAProps, Headline, NoFA } from "@/types/nofa";
+import mixpanel from "mixpanel-browser";
 
 export default function CreateYourNoFA() {
   const [coinId, setCoinId] = useState<string>("ethereum");
@@ -26,6 +27,8 @@ export default function CreateYourNoFA() {
   const { setNoFAFromData } = useNoFAStore();
 
   const createNoFAFn = async (coinId: string) => {
+    mixpanel.track("Create NoFA clicked");
+
     setIsCreatingNoFA(true);
     try {
       // 1. Get Coin Gecko Data
@@ -63,6 +66,11 @@ export default function CreateYourNoFA() {
       });
 
       setNoFAFromData(createdNoFA);
+
+
+      mixpanel.track("NoFA created", {
+        ...createdNoFA
+      });
 
       toaster.create({
         description: "NoFA successfully created.",

@@ -16,6 +16,7 @@ import { useNoFAStore } from "@/stores/nofa";
 import { Text, Flex, Button } from "@chakra-ui/react";
 import { Spinner } from "@heroui/spinner";
 import html2canvas from "html2canvas";
+import mixpanel from "mixpanel-browser";
 import { useRef, useState } from "react";
 
 export default function ParticularNoFA() {
@@ -333,6 +334,9 @@ export default function ParticularNoFA() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        mixpanel.track("Particular NoFA first downloaded", {
+          ...nofa,
+        });
       } catch (error) {
         console.error("Error:", error);
         toaster.create({
@@ -356,6 +360,9 @@ export default function ParticularNoFA() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        mixpanel.track("Particular NoFA downloaded", {
+          ...nofa,
+        });
       } catch (error) {
         console.error("Error downloading:", error);
         toaster.create({

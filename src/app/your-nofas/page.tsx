@@ -2,11 +2,13 @@
 
 import { NFTIcon } from "@/components/nyfa/svg-icons/nft-icon";
 import { useSupabase } from "@/providers/supabase-provider";
+import { useCreatorStore } from "@/stores/creator";
 import { useNoFAStore } from "@/stores/nofa";
 import { getColorForNoFA } from "@/utils/colorForNoFa";
 import { Button, Text, Flex, Box, SimpleGrid, Image } from "@chakra-ui/react";
 import { Divider } from "@heroui/divider";
 import { Spinner } from "@heroui/spinner";
+import mixpanel from "mixpanel-browser";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -17,7 +19,8 @@ export default function YourNoFas() {
     useNoFAStore();
 
   const { user } = useSupabase();
-
+  const creator = useCreatorStore((state) => state.creator);
+  
   useEffect(() => {
     if (user && user.id) {
       fetchUserNoFAs(user.id);
@@ -97,6 +100,15 @@ export default function YourNoFas() {
                     setNoFAFromData(nofa);
                     // Give a tiny delay to ensure state is updated
                     await new Promise((resolve) => setTimeout(resolve, 0));
+                    const { id: nofaId, ...nofaWithoutId } = nofa;
+                    const { id: creatorId, ...creatorWithoutId } = creator || {};
+
+                    mixpanel.track('Particular Your NoFA clicked', {
+                      nofaId: nofaId,
+                      creatorId: creatorId,
+                      ...nofaWithoutId,
+                      ...creator
+                    });
                     router.push(`/particular-nofa/${nofa.id}`);
                   }}
                 >
