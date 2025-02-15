@@ -1,3 +1,4 @@
+import { supabase } from "@/config/supabase";
 import { Creator } from "@/types/creator";
 import { create } from "zustand";
 
