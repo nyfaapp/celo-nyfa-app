@@ -30,9 +30,9 @@ export default function YourNoFas() {
         justifyContent={"start"}
         alignItems={"center"}
         flexDirection={"column"}
-        h={"100vh"} // Change to full viewport height
-        pb="60px" // Add padding bottom to account for absolute box
-        position="relative" // Add this to establish positioning context
+        h={"100vh"} 
+        pb="60px" 
+        position="relative" 
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
           <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
