@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Parkinsans } from "next/font/google";
 import "./globals.css";
-import '@rainbow-me/rainbowkit/styles.css';
+import "@rainbow-me/rainbowkit/styles.css";
 import MainProvider from "@/providers/main-provider";
+import { initMixpanel } from "@/config/mixpanel";
+import { useEffect } from "react";
 
 const parkinsans = Parkinsans({
   subsets: ["latin"],
@@ -18,6 +20,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    initMixpanel(); // Initialize Mixpanel
+  }, []);
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${parkinsans.className} bg-white`}>
