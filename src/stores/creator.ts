@@ -1,5 +1,5 @@
-import { supabase } from "@/config/supabase";
 import { Creator } from "@/types/creator";
+import { SupabaseClient } from "@supabase/supabase-js";
 import { create } from "zustand";
 
 interface CreatorStore {
@@ -7,7 +7,7 @@ interface CreatorStore {
   isLoading: boolean;
   setCreator: (data: Partial<Creator>) => void;
   resetCreator: () => void;
-  fetchCreator: (authId: string) => Promise<void>;
+  fetchCreator: (supabase: SupabaseClient, authId: string) => Promise<void>;
 }
 
 export const useCreatorStore = create<CreatorStore>((set) => ({
@@ -20,7 +20,7 @@ export const useCreatorStore = create<CreatorStore>((set) => ({
 
   resetCreator: () => set({ creator: null }),
 
-  fetchCreator: async (authId: string) => {
+  fetchCreator: async (supabase: SupabaseClient, authId: string) => {
     set({ isLoading: true });
     try {
       const { data, error } = await supabase

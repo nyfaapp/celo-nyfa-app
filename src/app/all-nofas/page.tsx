@@ -17,13 +17,13 @@ export default function AllNoFAs() {
   const { allNofas, isLoadingAll, fetchAllOtherNoFAs, setNoFAFromData } =
     useNoFAStore();
 
-  const { user } = useSupabase();
+  const { user, supabase } = useSupabase();
   const creator = useCreatorStore((state) => state.creator);
 
   useEffect(() => {
     if (user) {
       if (user.id) {
-        fetchAllOtherNoFAs(user.id);
+        fetchAllOtherNoFAs(supabase, user.id);
       }
     }
   }, [user]);

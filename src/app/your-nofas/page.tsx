@@ -18,12 +18,12 @@ export default function YourNoFas() {
   const { userNofas, fetchUserNoFAs, isLoading, setNoFAFromData } =
     useNoFAStore();
 
-  const { user } = useSupabase();
+  const { user, supabase } = useSupabase();
   const creator = useCreatorStore((state) => state.creator);
   
   useEffect(() => {
     if (user && user.id) {
-      fetchUserNoFAs(user.id);
+      fetchUserNoFAs(supabase, user.id);
     }
   }, []);
 

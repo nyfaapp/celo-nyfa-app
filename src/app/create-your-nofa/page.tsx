@@ -6,7 +6,6 @@ import { Text, Flex, Box, Button } from "@chakra-ui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { coins } from "../../data/coins";
 import { useState } from "react";
-import { supabase } from "@/config/supabase";
 import { useNoFAStore } from "@/stores/nofa";
 import { useRouter } from "next/navigation";
 import { useSupabase } from "@/providers/supabase-provider";
@@ -17,7 +16,7 @@ import mixpanel from "mixpanel-browser";
 
 export default function CreateYourNoFA() {
   const [coinId, setCoinId] = useState<string>("ethereum");
-  const { user } = useSupabase();
+  const { user, supabase } = useSupabase();
   const router = useRouter();
 
   const [coinTicker, setCoinTicker] = useState<string>("ETH");

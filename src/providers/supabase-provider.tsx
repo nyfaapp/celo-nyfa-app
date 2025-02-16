@@ -7,6 +7,7 @@ import { useCreatorStore } from "@/stores/creator";
 import { Creator } from "@/types/creator";
 import mixpanel from "mixpanel-browser";
 
+
 type SupabaseContext = {
   supabase: SupabaseClient;
   user: User | null;
@@ -14,12 +15,15 @@ type SupabaseContext = {
 
 const Context = createContext<SupabaseContext | undefined>(undefined);
 
+ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
 export default function SupabaseProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [supabase] = useState(() => createClientComponentClient());
+  const [supabase] = useState(() => createClientComponentClient({supabaseUrl, supabaseKey}));
   const [user, setUser] = useState<User | null>(null);
   const fetchCreator = useCreatorStore((state) => state.fetchCreator);
   const creator = useCreatorStore((state) => state.creator);
@@ -32,7 +36,7 @@ export default function SupabaseProvider({
       setUser(currentUser);
 
       if (currentUser?.id) {
-        fetchCreator(currentUser.id);
+        fetchCreator(supabase, currentUser.id);
         mixpanel.identify(currentUser.id);
         mixpanel.people.set({
           $distinct_id: currentUser.id,
