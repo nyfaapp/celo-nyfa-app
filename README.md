@@ -48,9 +48,7 @@ NoFA NFTs serve as:
 - **Storage**: 
   - IPFS (Pinata)
   - Supabase Postgres
-- **Blockchain**:
-  - Celo Network (Alfajores Testnet)
-  - OnchainKit
+- **Blockchain**: Celo Network (Alfajores Testnet)
 - **Smart Contracts**: Solidity (OpenZeppelin ERC721URIStorage)
 - **Data Sources**:
   - CoinGecko API
