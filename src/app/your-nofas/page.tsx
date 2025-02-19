@@ -51,7 +51,7 @@ export default function YourNoFas() {
               onClick={() => router.push("/all-nofas")}
             >
               <Text color={"white"} fontSize={"14px"} fontWeight={"normal"}>
-                View all others
+                View others
               </Text>
             </Button>
 

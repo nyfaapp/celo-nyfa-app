@@ -40,7 +40,7 @@ export default function AllNoFAs() {
       >
         <Box w="full" textAlign="center" pt={4} position={"static"} px={4}>
           <Text color={"#0F1C33"} fontSize={"24px"} fontWeight={"bold"}>
-            All Other NoFAs*
+            Other NoFAs*
           </Text>
 
           <Flex direction={"row"} justify={"space-between"} px={4}>
