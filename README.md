@@ -55,8 +55,7 @@ NoFA NFTs serve as:
   - CryptoNews API
 
 ## Database Schema
-
-<img width="995" alt="Screenshot 2025-02-08 at 23 37 22" src="https://github.com/user-attachments/assets/1e686232-7b3b-4fa4-8094-6c96d46e3fe4" />
+![supabase-schema-ruvujwylnajqettzxkod](https://github.com/user-attachments/assets/1b4b9904-541e-49ef-b0da-959e7d5d0f25)
 
 ## Getting Started
 
