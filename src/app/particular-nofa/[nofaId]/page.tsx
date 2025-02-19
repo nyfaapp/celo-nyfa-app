@@ -1,7 +1,7 @@
 "use client";
 
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
-import AgentStreamComponent from "@/components/nyfa/agent-stream";
+import NFTMinterComponent from "@/components/nyfa/nft-minter-component";
 import CoinInfo from "@/components/nyfa/nofa-components/coin-info";
 import CoinPerspectiveSection from "@/components/nyfa/nofa-components/coin-perspective";
 import Footer from "@/components/nyfa/nofa-components/footer";
@@ -420,7 +420,7 @@ export default function ParticularNoFA() {
             w="full"
             onClick={() =>
               window.open(
-                `https://base-sepolia.blockscout.com/tx/${nofa?.txnHash}`,
+                `https://celo-alfajores.blockscout.com//tx/${nofa?.txnHash}`,
                 "_blank"
               )
             }
@@ -436,15 +436,13 @@ export default function ParticularNoFA() {
           </Button>
         ) : null}
 
-        {/* {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
-          <AgentStreamComponent
-            privyWalletId={creator?.privyWalletId!}
+        {nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+          <NFTMinterComponent
             ipfsURI={nofa?.ipfsURI!}
-            userWalletAddress={creator?.userWalletAddress!}
             nofaId={nofa?.id!}
             nofaTxnHash={nofa?.txnHash!}
           />
-        ) : null} */}
+        ) : null}
 
         <Flex
           bgColor="#E2E8F0"
