@@ -30,6 +30,8 @@ export default function ParticularNoFA() {
 
   const creator = useCreatorStore((state) => state.creator);
 
+  const creatorCreatedThisNofa: boolean = nofa?.creatorAuthId === creator?.authId;
+
   const uploadNoFAToSupabase = async (
     file: File | null
   ): Promise<string | null> => {
@@ -115,6 +117,10 @@ export default function ParticularNoFA() {
         const fromPinata = await response.json();
 
         const ipfsHash: string = fromPinata.ipfsHash;
+
+        mixpanel.track("Particular NoFA uploaded to IPFS", {
+          ...nofa,
+        });
 
         const { data, error } = await supabase
           .from("NOFAS")
@@ -334,9 +340,20 @@ export default function ParticularNoFA() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        mixpanel.track("Particular NoFA first downloaded", {
-          ...nofa,
-        });
+
+        if (creatorCreatedThisNofa){
+          mixpanel.track("Particular NoFA first downloaded by Creator", {
+            ...nofa,
+          });
+        } else {
+            mixpanel.track("Particular NoFA first downloaded", {
+              ...nofa,
+              downloader: {
+                ...creator
+              },
+            });
+        }
+     
       } catch (error) {
         console.error("Error:", error);
         toaster.create({
@@ -390,7 +407,7 @@ export default function ParticularNoFA() {
           isDownloading={isDownloading}
         />
 
-        {!nofa?.ipfsURI && nofa?.creatorAuthId === user?.id ? (
+        {!nofa?.ipfsURI && creatorCreatedThisNofa ? (
           <Button
             bgColor="#A9CEEB"
             borderRadius={15}

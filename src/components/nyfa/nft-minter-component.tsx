@@ -11,6 +11,7 @@ import { Toaster, toaster } from "@/components/chakra/ui/toaster";
 import { createPublicClient, http, createWalletClient, custom, getAddress, Address } from 'viem';
 import { celoAlfajores } from 'viem/chains';
 import { useAccount } from "wagmi";
+import mixpanel from "mixpanel-browser";
 
 const MotionBox = motion(Box);
 
@@ -132,6 +133,9 @@ export default function NFTMinterComponent({
           description: "NFT minted successfully!",
           duration: 3000,
           type: "success",
+        });
+        mixpanel.track("Particular NoFA uploaded to IPFS", {
+          nofaId
         });
       } else {
         throw new Error("Transaction failed");
