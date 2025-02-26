@@ -377,9 +377,19 @@ export default function ParticularNoFA() {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        mixpanel.track("Particular NoFA downloaded", {
-          ...nofa,
-        });
+
+        if (creatorCreatedThisNofa){
+          mixpanel.track("Particular NoFA downloaded by Creator", {
+            ...nofa,
+          });
+        } else {
+            mixpanel.track("Particular NoFA downloaded", {
+              ...nofa,
+              downloader: {
+                ...creator
+              },
+            });
+        }
       } catch (error) {
         console.error("Error downloading:", error);
         toaster.create({
