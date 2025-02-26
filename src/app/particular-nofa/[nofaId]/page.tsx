@@ -395,6 +395,17 @@ export default function ParticularNoFA() {
           duration: 3000,
           type: "error",
         });
+        if (creatorCreatedThisNofa) {
+          mixpanel.track("Particular NoFA download attempt by Creator failed", {
+            ...nofa,
+            downloaderId: creator?.id,
+          });
+        } else {
+          mixpanel.track("Particular NoFA download attempt failed", {
+            ...nofa,
+            downloaderId: creator?.id,
+          });
+        }
       }
     }
     setIsDownloading(false);

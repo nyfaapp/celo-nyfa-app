@@ -8,8 +8,15 @@ import { useSupabase } from "@/providers/supabase-provider";
 import { NoFA } from "@/types/nofa";
 import { useNoFAStore } from "@/stores/nofa";
 import { Toaster, toaster } from "@/components/chakra/ui/toaster";
-import { createPublicClient, http, createWalletClient, custom, getAddress, Address } from 'viem';
-import { celoAlfajores } from 'viem/chains';
+import {
+  createPublicClient,
+  http,
+  createWalletClient,
+  custom,
+  getAddress,
+  Address,
+} from "viem";
+import { celoAlfajores } from "viem/chains";
 import { useAccount } from "wagmi";
 import mixpanel from "mixpanel-browser";
 
@@ -102,20 +109,22 @@ export default function NFTMinterComponent({
     try {
       const publicClient = createPublicClient({
         chain: celoAlfajores,
-        transport: http()
+        transport: http(),
       });
 
       const walletClient = createWalletClient({
         chain: celoAlfajores,
-        transport: custom(window.ethereum)
+        transport: custom(window.ethereum),
       });
 
-      const { abi, address: nftContractAddress } = await import('@/constants/nofaNFTContract');
+      const { abi, address: nftContractAddress } = await import(
+        "@/constants/nofaNFTContract"
+      );
 
       const { request } = await publicClient.simulateContract({
         address: nftContractAddress,
         abi,
-        functionName: 'mint',
+        functionName: "mint",
         args: [address, ipfsURI],
       });
 
@@ -127,25 +136,31 @@ export default function NFTMinterComponent({
 
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
-      if (receipt.status === 'success') {
+      if (receipt.status === "success") {
         await updateNofaInSupabase(hash);
         toaster.create({
           description: "NFT minted successfully!",
           duration: 3000,
           type: "success",
         });
-        mixpanel.track("Particular NoFA uploaded to IPFS", {
-          nofaId
+        mixpanel.track("Particular NoFA NFT minted", {
+          nofaId,
         });
       } else {
         throw new Error("Transaction failed");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred while minting");
+      setError(
+        err instanceof Error ? err.message : "An error occurred while minting"
+      );
       toaster.create({
         description: "Failed to mint NFT. Please try again.",
         duration: 3000,
         type: "error",
+      });
+      mixpanel.track("Particular NoFA mint attempt failed", {
+        nofaId,
+        error: err instanceof Error ? err.message : null,
       });
     } finally {
       setLoading(false);
