@@ -30,7 +30,8 @@ export default function ParticularNoFA() {
 
   const creator = useCreatorStore((state) => state.creator);
 
-  const creatorCreatedThisNofa: boolean = nofa?.creatorAuthId === creator?.authId;
+  const creatorCreatedThisNofa: boolean =
+    nofa?.creatorAuthId === creator?.authId;
 
   const uploadNoFAToSupabase = async (
     file: File | null
@@ -341,19 +342,17 @@ export default function ParticularNoFA() {
         a.click();
         document.body.removeChild(a);
 
-        if (creatorCreatedThisNofa){
+        if (creatorCreatedThisNofa) {
           mixpanel.track("Particular NoFA first downloaded by Creator", {
             ...nofa,
+            downloaderId: creator?.id,
           });
         } else {
-            mixpanel.track("Particular NoFA first downloaded", {
-              ...nofa,
-              downloader: {
-                ...creator
-              },
-            });
+          mixpanel.track("Particular NoFA first downloaded", {
+            ...nofa,
+            downloaderId: creator?.id,
+          });
         }
-     
       } catch (error) {
         console.error("Error:", error);
         toaster.create({
@@ -378,17 +377,16 @@ export default function ParticularNoFA() {
         a.click();
         document.body.removeChild(a);
 
-        if (creatorCreatedThisNofa){
+        if (creatorCreatedThisNofa) {
           mixpanel.track("Particular NoFA downloaded by Creator", {
             ...nofa,
+            downloaderId: creator?.id,
           });
         } else {
-            mixpanel.track("Particular NoFA downloaded", {
-              ...nofa,
-              downloader: {
-                ...creator
-              },
-            });
+          mixpanel.track("Particular NoFA downloaded", {
+            ...nofa,
+            downloaderId: creator?.id,
+          });
         }
       } catch (error) {
         console.error("Error downloading:", error);
