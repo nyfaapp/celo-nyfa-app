@@ -25,7 +25,6 @@ const connectors = connectorsForWallets(
       wallets: [
         injectedWallet,
         metaMaskWallet,
-        rainbowWallet,
         braveWallet
       ],
     },
