@@ -9,15 +9,27 @@ import {
 } from "@rainbow-me/rainbowkit";
 import { WagmiProvider, createConfig, http } from "wagmi";
 import { celo, celoAlfajores } from "wagmi/chains";
-import { injectedWallet } from "@rainbow-me/rainbowkit/wallets";
-import { useMemo } from 'react';
+import {
+  injectedWallet,
+  metaMaskWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  braveWallet
+} from "@rainbow-me/rainbowkit/wallets";
+
 
 // Move configuration outside component
 const connectors = connectorsForWallets(
   [
     {
       groupName: "Recommended",
-      wallets: [injectedWallet],
+      wallets: [
+        injectedWallet,
+        metaMaskWallet,
+        rainbowWallet,
+        walletConnectWallet,
+        braveWallet
+      ],
     },
   ],
   {
@@ -51,9 +63,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={rainbowTheme}>
-          {children}
-        </RainbowKitProvider>
+        <RainbowKitProvider theme={rainbowTheme}>{children}</RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
