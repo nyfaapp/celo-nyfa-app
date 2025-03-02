@@ -12,8 +12,8 @@ import { celo, celoAlfajores } from "wagmi/chains";
 import {
   injectedWallet,
   metaMaskWallet,
-  rainbowWallet,
-  braveWallet
+  braveWallet,
+  walletConnectWallet
 } from "@rainbow-me/rainbowkit/wallets";
 
 
@@ -25,13 +25,16 @@ const connectors = connectorsForWallets(
       wallets: [
         injectedWallet,
         metaMaskWallet,
-        braveWallet
+        braveWallet,
+        walletConnectWallet
       ],
+    
     },
+  
   ],
   {
-    appName: "Canvassing - Participant",
-    projectId: String(),
+    appName: "Celo Nyfa App",
+    projectId: String(process.env.REOWN_PROJECT_ID),
   }
 );
 
