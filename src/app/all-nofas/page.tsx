@@ -106,9 +106,9 @@ export default function AllNoFAs() {
 
                     mixpanel.track('Particular All NoFA clicked', {
                       nofaId: nofaId,
-                      creatorId: creatorId,
+                      clickerId: creatorId,
                       ...nofaWithoutId,
-                      ...creator
+                      ...creator,
                     });
                     router.push(`/particular-nofa/${nofa.id}`);
                   }}
