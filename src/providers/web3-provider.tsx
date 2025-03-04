@@ -13,11 +13,11 @@ import {
   injectedWallet,
   metaMaskWallet,
   braveWallet,
-  walletConnectWallet
+  walletConnectWallet,
+  rainbowWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
 
-// Move configuration outside component
 const connectors = connectorsForWallets(
   [
     {
@@ -26,15 +26,14 @@ const connectors = connectorsForWallets(
         injectedWallet,
         metaMaskWallet,
         braveWallet,
-        walletConnectWallet
+        rainbowWallet,
+        walletConnectWallet,
       ],
-    
     },
-  
   ],
   {
     appName: "Celo Nyfa App",
-    projectId: String(process.env.REOWN_PROJECT_ID),
+    projectId: String(process.env.NEXT_PUBLIC_REOWN_PROJECT_ID),
   }
 );
 
