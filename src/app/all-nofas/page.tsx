@@ -102,9 +102,10 @@ export default function AllNoFAs() {
                     // Give a tiny delay to ensure state is updated
                     await new Promise((resolve) => setTimeout(resolve, 0));
                     const { id: nofaId, ...nofaWithoutId } = nofa;
-                    const { id: creatorId, ...creatorWithoutId } = creator || {};
+                    const { id: creatorId, ...creatorWithoutId } =
+                      creator || {};
 
-                    mixpanel.track('Particular All NoFA clicked', {
+                    mixpanel.track("Particular All NoFA clicked", {
                       nofaId: nofaId,
                       clickerId: creatorId,
                       ...nofaWithoutId,
@@ -136,12 +137,14 @@ export default function AllNoFAs() {
 
       <Box
         bg="#0F1C33"
-        position="fixed" // Change to fixed
+        position="fixed"
         bottom="0"
-        left="0" // Add this
-        right="0"
+        left={["0", "0", "50%"]} // Mobile first, desktop centered
+        width={["100%", "100%", "100%"]}
+        maxWidth={["100%", "100%", "480px"]} // Match your container's max width
+        transform={["none", "none", "translateX(-50%)"]}
         py={4}
-        zIndex={2} // Ensure it stays on top
+        zIndex={2}
       >
         <Text
           color={"white"}

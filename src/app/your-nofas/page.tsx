@@ -135,12 +135,14 @@ export default function YourNoFas() {
 
       <Box
         bg="#0F1C33"
-        position="fixed" // Change to fixed
+        position="fixed"
         bottom="0"
-        left="0" // Add this
-        right="0"
+        left={["0", "0", "50%"]} // Mobile first, desktop centered
+        width={["100%", "100%", "100%"]}
+        maxWidth={["100%", "100%", "480px"]} // Match your container's max width
+        transform={["none", "none", "translateX(-50%)"]}
         py={4}
-        zIndex={2} // Ensure it stays on top
+        zIndex={2}// Ensure it stays on top
       >
         <Text
           color={"white"}
