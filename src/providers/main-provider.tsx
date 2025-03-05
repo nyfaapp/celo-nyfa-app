@@ -7,6 +7,7 @@ import SupabaseProvider from "@/providers/supabase-provider";
 import AuthRedirectProvider from "@/providers/auth-redirect-provider";
 import Header from "@/components/nyfa/header";
 import MobileOnlyProvider from "./mobile-only-provider";
+import ResponsiveLayoutProvider from "./responsive-layout-provider";
 
 export default function MainProvider({
   children,
@@ -15,7 +16,14 @@ export default function MainProvider({
 }) {
   return (
     <Provider>
-      <MobileOnlyProvider>
+      <ResponsiveLayoutProvider
+        config={{
+          maxMobileWidth: 768, // Adjust to your definition of mobile
+          maxContentWidth: 480, // Width of the container on desktop
+          desktopBackgroundColor: "#A9CEEB", // Background color outside the container
+          showMobileBorder: true, // Show border around mobile view on desktop
+        }}
+      >
         <Web3Provider>
           <ColorModeProvider forcedTheme="dark">
             <SupabaseProvider>
@@ -24,7 +32,7 @@ export default function MainProvider({
             </SupabaseProvider>
           </ColorModeProvider>
         </Web3Provider>
-      </MobileOnlyProvider>
+      </ResponsiveLayoutProvider>
     </Provider>
   );
 }
